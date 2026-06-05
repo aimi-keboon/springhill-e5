@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbyb2qQG1mvbGvnarOzU-al82-_lblCA_24p3Agip5FW279MK1dWhq-OkH4szF_gAJBRHQ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbz4BZXk8xXab4sMbEJnOOjvkbn35bilq02IWFOG7ufmYozGMVu7MctuvKWr5MZ7Cq12Tg/exec";
 
 function showSection(sectionId) {
   const sections = document.querySelectorAll(".panel");
@@ -272,8 +272,108 @@ async function submitEventForm(event) {
     statusBox.textContent = "Submission failed: " + error.message;
   }
 }
+async function loadApprovedEvents() {
+  const eventsList = document.getElementById("approvedEventsList");
+
+  if (!eventsList) return;
+
+  eventsList.innerHTML = "<p>Loading approved events...</p>";
+
+  try {
+    const response = await fetch(`${API_URL}?action=getApprovedEvents`);
+    const result = await response.json();
+
+    if (!result.success) {
+      eventsList.innerHTML = `<p>Unable to load events: ${result.message}</p>`;
+      return;
+    }
+
+    const events = result.data.events || [];
+
+    if (events.length === 0) {
+      eventsList.innerHTML = "<p>No approved events available at the moment.</p>";
+      return;
+    }
+
+    eventsList.innerHTML = events.map((event) => {
+      const offerBadge = event.residentOfferAvailable === "Yes"
+        ? `<span class="event-badge">Resident Offer Available</span>`
+        : "";
+
+      const poster = event.eventPosterUrl
+        ? `<img src="${event.eventPosterUrl}" alt="${event.eventTitle}" class="event-poster" />`
+        : "";
+
+      const registrationButton = event.registrationLink
+        ? `<a href="${event.registrationLink}" target="_blank" class="event-link">Register / Contact</a>`
+        : "";
+
+      const offerDetails = event.residentOfferAvailable === "Yes"
+        ? `
+          <div class="resident-offer">
+            <strong>${event.residentOfferTitle || "Special Offer for Residents"}</strong>
+            <p>${event.residentOfferDescription || ""}</p>
+            ${event.normalPrice ? `<p><b>Normal Price:</b> ${event.normalPrice}</p>` : ""}
+            ${event.residentPrice ? `<p><b>Resident Price:</b> ${event.residentPrice}</p>` : ""}
+            ${event.promoCode ? `<p><b>Promo Code:</b> ${event.promoCode}</p>` : ""}
+          </div>
+        `
+        : "";
+
+      return `
+        <article class="event-card">
+          ${poster}
+          <div class="event-content">
+            ${offerBadge}
+            <h3>${event.eventTitle || "Untitled Event"}</h3>
+            <p>${event.eventDescription || ""}</p>
+            <p><b>Date:</b> ${formatDisplayDate(event.eventDate)}</p>
+            <p><b>Time:</b> ${formatDisplayTime(event.eventTime)}</p>
+            <p><b>Location:</b> ${event.eventLocation || "-"}</p>
+            ${offerDetails}
+            ${registrationButton}
+          </div>
+        </article>
+      `;
+    }).join("");
+  } catch (error) {
+    eventsList.innerHTML = `<p>Unable to load events: ${error.message}</p>`;
+  }
+}
+
+function formatDisplayDate(dateValue) {
+  if (!dateValue) return "-";
+
+  const date = new Date(dateValue);
+
+  if (Number.isNaN(date.getTime())) {
+    return dateValue;
+  }
+
+  return date.toLocaleDateString("en-MY", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+function formatDisplayTime(timeValue) {
+  if (!timeValue) return "-";
+
+  const date = new Date(timeValue);
+
+  if (!Number.isNaN(date.getTime())) {
+    return date.toLocaleTimeString("en-MY", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  }
+
+  return timeValue;
+}
 document.addEventListener("DOMContentLoaded", () => {
   testBackendConnection();
+  loadApprovedEvents();
 
   const residentForm = document.getElementById("residentForm");
 
