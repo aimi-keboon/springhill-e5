@@ -143,6 +143,40 @@
   </div>
 </section>
 <section class="panel">
+  <h2>Reset Password</h2>
+
+  <p>
+    Approved residents can change their temporary password here. After reset,
+    use the new password to check payment records.
+  </p>
+
+  <form id="resetPasswordForm" class="form-card">
+    <label>
+      Registered Email
+      <input type="email" name="resetEmail" required placeholder="Enter your registered email" />
+    </label>
+
+    <label>
+      Temporary Password
+      <input type="password" name="temporaryPassword" required placeholder="Enter your temporary password" />
+    </label>
+
+    <label>
+      New Password
+      <input type="password" name="newPassword" required minlength="8" placeholder="Minimum 8 characters" />
+    </label>
+
+    <label>
+      Confirm New Password
+      <input type="password" name="confirmNewPassword" required minlength="8" placeholder="Re-enter new password" />
+    </label>
+
+    <button type="submit">Reset Password</button>
+
+    <p id="resetPasswordStatus" class="form-status"></p>
+  </form>
+</section>
+<section class="panel">
   <h2>Check Maintenance Payment</h2>
 
   <p>
@@ -150,15 +184,20 @@
   </p>
 
   <form id="paymentLookupForm" class="form-card">
-    <label>
-      Registered Email
-      <input type="email" name="residentEmail" required placeholder="Enter your registered email" />
-    </label>
+  <label>
+    Registered Email
+    <input type="email" name="residentEmail" required placeholder="Enter your registered email" />
+  </label>
 
-    <button type="submit">Check Payment Status</button>
+  <label>
+  Password
+  <input type="password" name="residentPassword" required placeholder="Enter your password" />
+</label>
 
-    <p id="paymentLookupStatus" class="form-status"></p>
-  </form>
+  <button type="submit">Check Payment Status</button>
+
+  <p id="paymentLookupStatus" class="form-status"></p>
+</form>
 
   <div id="paymentResult" class="payment-result hidden"></div>
 </section>

@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbyQC5N9xrpPoDLnal9vBQRQvclgJhk8_0YDisIcnYt3v-d10Pd1tmdSt5kfyxqTEvE/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzrdU4BcJh8t8BNseDnM9gV_pSOmDjkl6xaCaOZIhPF_qzyPUHeXm5_BMFHNSsRx4-67Q/exec";
 
 function showSection(sectionId) {
   const sections = document.querySelectorAll(".panel");
@@ -422,14 +422,17 @@ async function submitPaymentLookupForm(event) {
   const resultBox = document.getElementById("paymentResult");
 
   const formData = new FormData(form);
-  const email = formData.get("residentEmail");
+const email = formData.get("residentEmail");
+const password = formData.get("residentPassword");
 
   statusBox.textContent = "Checking payment status...";
   resultBox.classList.add("hidden");
   resultBox.innerHTML = "";
 
   try {
-    const response = await fetch(`${API_URL}?action=getResidentPayments&email=${encodeURIComponent(email)}`);
+    const response = await fetch(
+  `${API_URL}?action=getResidentPayments&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+);
     const result = await response.json();
 
     if (!result.success) {
@@ -560,6 +563,49 @@ function showPaymentRedirectStatus() {
     statusBox.classList.add("error");
   }
 }
+async function submitResetPasswordForm(event) {
+  event.preventDefault();
+
+  const form = event.target;
+  const statusBox = document.getElementById("resetPasswordStatus");
+
+  const formData = new FormData(form);
+
+  const email = formData.get("resetEmail");
+  const temporaryPassword = formData.get("temporaryPassword");
+  const newPassword = formData.get("newPassword");
+  const confirmNewPassword = formData.get("confirmNewPassword");
+
+  if (newPassword !== confirmNewPassword) {
+    statusBox.textContent = "New password and confirm password do not match.";
+    return;
+  }
+
+  statusBox.textContent = "Resetting password...";
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "resetResidentPassword",
+        email: email,
+        temporaryPassword: temporaryPassword,
+        newPassword: newPassword,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      statusBox.textContent = "Password reset successfully. You can now use your new password to check payment records.";
+      form.reset();
+    } else {
+      statusBox.textContent = "Password reset failed: " + result.message;
+    }
+  } catch (error) {
+    statusBox.textContent = "Password reset failed: " + error.message;
+  }
+}
 document.addEventListener("DOMContentLoaded", () => {
   testBackendConnection();
   showPaymentRedirectStatus();
@@ -586,5 +632,10 @@ const paymentLookupForm = document.getElementById("paymentLookupForm");
 
 if (paymentLookupForm) {
   paymentLookupForm.addEventListener("submit", submitPaymentLookupForm);
+}
+const resetPasswordForm = document.getElementById("resetPasswordForm");
+
+if (resetPasswordForm) {
+  resetPasswordForm.addEventListener("submit", submitResetPasswordForm);
 }
 });
