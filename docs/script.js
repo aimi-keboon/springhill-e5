@@ -445,12 +445,13 @@ async function submitPaymentLookupForm(event) {
 
     const paymentRows = payments.length
       ? payments.map((payment) => `
-          <tr>
+         <tr>
   <td>${formatPaymentPeriod(payment.paymentPeriod)}</td>
   <td>${payment.paymentType || "-"}</td>
   <td>RM${Number(payment.amount || 0).toFixed(2)}</td>
   <td>${payment.status || "-"}</td>
   <td>${formatDisplayDate(payment.paidAt)}</td>
+  <td>${payment.receiptNo || "-"}</td>
   <td>
     ${payment.status === "Due" || payment.status === "Overdue"
       ? `<button type="button" class="small-button" onclick="payMaintenance('${payment.paymentId}', '${resident.email}')">Pay Now</button>`
@@ -461,7 +462,7 @@ async function submitPaymentLookupForm(event) {
         `).join("")
       : `
           <tr>
-  <td colspan="6">No payment records found.</td>
+  <td colspan="7">No payment records found.</td>
 </tr>
         `;
 
@@ -479,6 +480,7 @@ async function submitPaymentLookupForm(event) {
   <th>Amount</th>
   <th>Status</th>
   <th>Paid At</th>
+  <th>Receipt No.</th>
   <th>Action</th>
 </tr>
           </thead>
