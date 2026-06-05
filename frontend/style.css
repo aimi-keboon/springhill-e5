@@ -346,3 +346,55 @@ button:hover {
   font-size: 0.78rem;
   font-weight: 700;
 }
+.payment-result {
+  margin-top: 22px;
+  padding: 20px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.payment-result h3 {
+  margin: 0 0 10px;
+  color: #1f4f46;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 18px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+}
+
+th,
+td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  vertical-align: middle;
+}
+
+th {
+  background: #f9fafb;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+td {
+  color: #4b5563;
+}
+
+.small-button {
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 0.85rem;
+  background: #1f4f46;
+  color: white;
+  white-space: nowrap;
+}
