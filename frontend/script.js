@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbziXv1mxBu2mthHl4nYf2-dNBPId-SMu7UGc59keoJKOUoxzlXwoOsITzetfAjsQro9sQ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyQC5N9xrpPoDLnal9vBQRQvclgJhk8_0YDisIcnYt3v-d10Pd1tmdSt5kfyxqTEvE/exec";
 
 function showSection(sectionId) {
   const sections = document.querySelectorAll(".panel");
@@ -391,6 +391,29 @@ function formatPaymentPeriod(periodValue) {
 
   return textValue;
 }
+async function payMaintenance(paymentId, email) {
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "createMaintenanceCheckout",
+        paymentId: paymentId,
+        email: email,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      alert("Unable to create payment checkout: " + result.message);
+      return;
+    }
+
+    window.location.href = result.data.checkoutUrl;
+  } catch (error) {
+    alert("Unable to create payment checkout: " + error.message);
+  }
+}
 async function submitPaymentLookupForm(event) {
   event.preventDefault();
 
@@ -423,17 +446,23 @@ async function submitPaymentLookupForm(event) {
     const paymentRows = payments.length
       ? payments.map((payment) => `
           <tr>
-            <td>${formatPaymentPeriod(payment.paymentPeriod)}</td>
-            <td>${payment.paymentType || "-"}</td>
-            <td>RM${Number(payment.amount || 0).toFixed(2)}</td>
-            <td>${payment.status || "-"}</td>
-            <td>${formatDisplayDate(payment.paidAt)}</td>
-          </tr>
+  <td>${formatPaymentPeriod(payment.paymentPeriod)}</td>
+  <td>${payment.paymentType || "-"}</td>
+  <td>RM${Number(payment.amount || 0).toFixed(2)}</td>
+  <td>${payment.status || "-"}</td>
+  <td>${formatDisplayDate(payment.paidAt)}</td>
+  <td>
+    ${payment.status === "Due" || payment.status === "Overdue"
+      ? `<button type="button" class="small-button" onclick="payMaintenance('${payment.paymentId}', '${resident.email}')">Pay Now</button>`
+      : "-"
+    }
+  </td>
+</tr>
         `).join("")
       : `
           <tr>
-            <td colspan="5">No payment records found.</td>
-          </tr>
+  <td colspan="6">No payment records found.</td>
+</tr>
         `;
 
     resultBox.innerHTML = `
@@ -445,12 +474,13 @@ async function submitPaymentLookupForm(event) {
         <table>
           <thead>
             <tr>
-              <th>Period</th>
-              <th>Type</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th>Paid At</th>
-            </tr>
+  <th>Period</th>
+  <th>Type</th>
+  <th>Amount</th>
+  <th>Status</th>
+  <th>Paid At</th>
+  <th>Action</th>
+</tr>
           </thead>
           <tbody>
             ${paymentRows}
