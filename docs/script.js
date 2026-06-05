@@ -531,8 +531,36 @@ async function loadPostedAnnouncements() {
     announcementsList.innerHTML = `<p>Unable to load announcements: ${error.message}</p>`;
   }
 }
+function showPaymentRedirectStatus() {
+  const statusBox = document.getElementById("paymentRedirectStatus");
+
+  if (!statusBox) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const paymentStatus = params.get("payment");
+  const paymentId = params.get("paymentId");
+
+  if (paymentStatus === "success") {
+    statusBox.textContent = paymentId
+      ? `Payment successful. Receipt will be sent after confirmation. Payment ID: ${paymentId}`
+      : "Payment successful. Receipt will be sent after confirmation.";
+
+    statusBox.classList.remove("hidden");
+    statusBox.classList.add("success");
+  }
+
+  if (paymentStatus === "cancelled") {
+    statusBox.textContent = paymentId
+      ? `Payment cancelled. You may try again anytime. Payment ID: ${paymentId}`
+      : "Payment cancelled. You may try again anytime.";
+
+    statusBox.classList.remove("hidden");
+    statusBox.classList.add("error");
+  }
+}
 document.addEventListener("DOMContentLoaded", () => {
   testBackendConnection();
+  showPaymentRedirectStatus();
   loadPostedAnnouncements();
   loadApprovedEvents();
 
