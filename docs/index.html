@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>SpringHill E5 Community System</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero">
+      <p class="eyebrow">SpringHill E5</p>
+
+      <h1>Community Maintenance & Events Portal</h1>
+
+      <p class="hero-text">
+        A simple system for resident registration, maintenance payment tracking,
+        announcements, and community event promotions.
+      </p>
+
+      <div class="hero-actions">
+        <button type="button" onclick="showSection('registration')">
+          Register as Resident
+        </button>
+
+        <button type="button" onclick="showSection('events')">
+          Submit Event Promotion
+        </button>
+      </div>
+
+      <p id="backendStatus" class="status">Checking backend connection...</p>
+    </section>
+
+    <section id="registration" class="panel hidden">
+      <h2>Resident Registration</h2>
+
+      <p>
+        Submit your details for committee approval. Once approved, you will receive
+        login details by email.
+      </p>
+
+      <form id="residentForm" class="form-card">
+        <label>
+          Full Name
+          <input type="text" name="fullName" required />
+        </label>
+
+        <label>
+          Email
+          <input type="email" name="email" required />
+        </label>
+
+        <label>
+          Phone Number
+          <input type="tel" name="phone" required />
+        </label>
+
+        <label>
+          Unit / House Number
+          <input type="text" name="unitNo" required placeholder="Example: E5-12" />
+        </label>
+
+        <label>
+          Resident Type
+          <select name="residentType" required>
+            <option value="">Select resident type</option>
+            <option value="Owner">Owner</option>
+            <option value="Tenant">Tenant</option>
+            <option value="Family Member">Family Member</option>
+          </select>
+        </label>
+
+        <div class="dynamic-section">
+          <div class="section-header">
+            <h3>Transport / Vehicle Details</h3>
+
+            <button type="button" class="secondary-button" onclick="addTransportRow()">
+              + Add Transport
+            </button>
+          </div>
+
+          <p class="helper-text">
+            Optional. Add this only if you want to register your car, motorcycle,
+            bicycle, or other vehicle for neighbourhood records.
+          </p>
+
+          <div id="transportRows"></div>
+        </div>
+
+        <div class="dynamic-section">
+          <div class="section-header">
+            <h3>Family Members</h3>
+
+            <button type="button" class="secondary-button" onclick="addFamilyRow()">
+              + Add Family Member
+            </button>
+          </div>
+
+          <p class="helper-text">
+            Optional. Add family members living in the same unit for community
+            and security records.
+          </p>
+
+          <div id="familyRows"></div>
+        </div>
+
+        <div class="terms-box">
+  <label class="checkbox-label">
+    <input type="checkbox" name="residentTermsAccepted" required />
+    I confirm that the information provided is accurate and agree that my
+    registration is subject to committee approval before account access is given.
+  </label>
+</div>
+
+<button type="submit">Submit Registration</button>
+
+<p id="residentFormStatus" class="form-status"></p>
+      </form>
+    </section>
+
+    <section id="events" class="panel hidden">
+  <h2>Event Promotion Submission</h2>
+
+  <p>
+    Submit your event to be reviewed and promoted on the community website.
+    Resident special offers are encouraged.
+  </p>
+
+  <form id="eventForm" class="form-card">
+    <label>
+      Organiser Type
+      <select name="organiserType" required>
+        <option value="">Select organiser type</option>
+        <option value="Resident / Member">Resident / Member</option>
+        <option value="Outsider / Business">Outsider / Business</option>
+      </select>
+    </label>
+
+    <label>
+      Organiser Name
+      <input type="text" name="organiserName" required />
+    </label>
+
+    <label>
+      Email
+      <input type="email" name="email" required />
+    </label>
+
+    <label>
+      Phone Number
+      <input type="tel" name="phone" required />
+    </label>
+
+    <label>
+      Unit / House Number
+      <input type="text" name="unitNo" placeholder="Required only for residents/members" />
+    </label>
+
+    <label>
+      Event Title
+      <input type="text" name="eventTitle" required />
+    </label>
+
+    <label>
+      Event Description
+      <textarea name="eventDescription" rows="5" required></textarea>
+    </label>
+
+    <label>
+      Event Date
+      <input type="date" name="eventDate" required />
+    </label>
+
+    <label>
+      Event Time
+      <input type="time" name="eventTime" required />
+    </label>
+
+    <label>
+      Event Location
+      <input type="text" name="eventLocation" required />
+    </label>
+
+    <label>
+      Event Poster URL
+      <input type="url" name="eventPosterUrl" placeholder="Paste image/poster link if available" />
+    </label>
+
+    <label>
+      Registration / Contact Link
+      <input type="url" name="registrationLink" placeholder="Example: Google Form, WhatsApp link, website link" />
+    </label>
+
+    <label>
+      Website Listing Duration
+      <select name="websiteDurationDays" required>
+        <option value="">Select duration</option>
+        <option value="7">7 days</option>
+        <option value="14">14 days</option>
+        <option value="30">30 days</option>
+      </select>
+    </label>
+
+    <label>
+      WhatsApp Blast Count
+      <select name="whatsappBlastCount" required>
+        <option value="">Select blast count</option>
+        <option value="0">No WhatsApp blast</option>
+        <option value="1">1 blast</option>
+        <option value="2">2 blasts</option>
+        <option value="3">3 blasts</option>
+      </select>
+    </label>
+
+    <label>
+      Preferred WhatsApp Blast Dates
+      <input type="text" name="preferredBlastDates" placeholder="Example: 10 June, 12 June, event day morning" />
+    </label>
+    <div class="fee-preview">
+  <strong>Estimated Promotion Fee:</strong>
+  <span id="eventFeePreview">Please select organiser type, duration, and WhatsApp blast count.</span>
+</div>
+
+    <div class="dynamic-section">
+  <h3>Special Offer for Residents</h3>
+
+  <label>
+    Offer Available?
+    <select name="residentOfferAvailable" id="residentOfferAvailable" required>
+      <option value="">Select option</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
+  </label>
+
+  <div id="residentOfferFields" class="hidden">
+    <label>
+      Offer Type
+      <select name="residentOfferTitle">
+        <option value="">Select offer type</option>
+        <option value="Discount for residents">Discount for residents</option>
+        <option value="Resident-only price">Resident-only price</option>
+        <option value="Free gift for residents">Free gift for residents</option>
+        <option value="Early bird offer">Early bird offer</option>
+        <option value="Family package">Family package</option>
+        <option value="Buy 1 Free 1">Buy 1 Free 1</option>
+        <option value="Free entry for children">Free entry for children</option>
+        <option value="Free consultation">Free consultation</option>
+        <option value="Priority booking for residents">Priority booking for residents</option>
+        <option value="Other">Other</option>
+      </select>
+    </label>
+
+    <label>
+      Offer Description
+      <textarea name="residentOfferDescription" rows="4" placeholder="Explain what residents will get"></textarea>
+    </label>
+
+    <label>
+      Normal Price
+      <input type="text" name="normalPrice" placeholder="Example: RM100" />
+    </label>
+
+    <label>
+      Resident Price
+      <input type="text" name="residentPrice" placeholder="Example: RM80" />
+    </label>
+
+    <label>
+      Promo Code
+      <input type="text" name="promoCode" placeholder="Example: SPRINGHILL20" />
+    </label>
+
+    <label>
+      Offer Expiry Date
+      <input type="date" name="offerExpiryDate" />
+    </label>
+  </div>
+</div>
+
+    <div class="terms-box">
+  <label class="checkbox-label">
+    <input type="checkbox" name="eventTermsAccepted" required />
+    I confirm that the event details provided are accurate and agree that all
+    submissions are subject to admin/committee approval before being published.
+  </label>
+</div>
+
+<button type="submit">Submit Event Promotion</button>
+
+<p id="eventFormStatus" class="form-status"></p>
+  </form>
+</section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
