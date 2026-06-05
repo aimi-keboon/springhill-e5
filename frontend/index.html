@@ -130,6 +130,26 @@
     <p>Loading approved events...</p>
   </div>
 </section>
+<section class="panel">
+  <h2>Check Maintenance Payment</h2>
+
+  <p>
+    Approved residents can check their maintenance payment due and payment history using their registered email.
+  </p>
+
+  <form id="paymentLookupForm" class="form-card">
+    <label>
+      Registered Email
+      <input type="email" name="residentEmail" required placeholder="Enter your registered email" />
+    </label>
+
+    <button type="submit">Check Payment Status</button>
+
+    <p id="paymentLookupStatus" class="form-status"></p>
+  </form>
+
+  <div id="paymentResult" class="payment-result hidden"></div>
+</section>
     <section id="events" class="panel hidden">
   <h2>Event Promotion Submission</h2>
 

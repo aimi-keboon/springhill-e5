@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbz4BZXk8xXab4sMbEJnOOjvkbn35bilq02IWFOG7ufmYozGMVu7MctuvKWr5MZ7Cq12Tg/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwiAn-YLsiMbItVm2ik_CKgAaN5ZlBTjANGTwP1xYMYJMnvPGiG9S9teVkcUeX7-xjGlQ/exec";
 
 function showSection(sectionId) {
   const sections = document.querySelectorAll(".panel");
@@ -371,6 +371,99 @@ function formatDisplayTime(timeValue) {
 
   return timeValue;
 }
+function formatPaymentPeriod(periodValue) {
+  if (!periodValue) return "-";
+
+  const textValue = String(periodValue);
+
+  if (/^\d{4}-\d{2}$/.test(textValue)) {
+    return textValue;
+  }
+
+  const date = new Date(periodValue);
+
+  if (!Number.isNaN(date.getTime())) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+
+    return `${year}-${month}`;
+  }
+
+  return textValue;
+}
+async function submitPaymentLookupForm(event) {
+  event.preventDefault();
+
+  const form = event.target;
+  const statusBox = document.getElementById("paymentLookupStatus");
+  const resultBox = document.getElementById("paymentResult");
+
+  const formData = new FormData(form);
+  const email = formData.get("residentEmail");
+
+  statusBox.textContent = "Checking payment status...";
+  resultBox.classList.add("hidden");
+  resultBox.innerHTML = "";
+
+  try {
+    const response = await fetch(`${API_URL}?action=getResidentPayments&email=${encodeURIComponent(email)}`);
+    const result = await response.json();
+
+    if (!result.success) {
+      statusBox.textContent = result.message;
+      return;
+    }
+
+    const resident = result.data.resident;
+    const payments = result.data.payments || [];
+    const totalDue = Number(result.data.totalDue || 0);
+
+    statusBox.textContent = "Payment status loaded.";
+
+    const paymentRows = payments.length
+      ? payments.map((payment) => `
+          <tr>
+            <td>${formatPaymentPeriod(payment.paymentPeriod)}</td>
+            <td>${payment.paymentType || "-"}</td>
+            <td>RM${Number(payment.amount || 0).toFixed(2)}</td>
+            <td>${payment.status || "-"}</td>
+            <td>${formatDisplayDate(payment.paidAt)}</td>
+          </tr>
+        `).join("")
+      : `
+          <tr>
+            <td colspan="5">No payment records found.</td>
+          </tr>
+        `;
+
+    resultBox.innerHTML = `
+      <h3>${resident.fullName}</h3>
+      <p><b>Unit:</b> ${resident.unitNo}</p>
+      <p><b>Total Due:</b> RM${totalDue.toFixed(2)}</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Period</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Paid At</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${paymentRows}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    resultBox.classList.remove("hidden");
+  } catch (error) {
+    statusBox.textContent = "Unable to check payment status: " + error.message;
+  }
+}
 document.addEventListener("DOMContentLoaded", () => {
   testBackendConnection();
   loadApprovedEvents();
@@ -390,5 +483,10 @@ if (eventForm) {
 
   calculateEventFeePreview();
   toggleResidentOfferFields();
+}
+const paymentLookupForm = document.getElementById("paymentLookupForm");
+
+if (paymentLookupForm) {
+  paymentLookupForm.addEventListener("submit", submitPaymentLookupForm);
 }
 });
