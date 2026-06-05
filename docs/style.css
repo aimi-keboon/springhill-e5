@@ -307,3 +307,42 @@ button:hover {
 .event-link:hover {
   transform: translateY(-1px);
 }
+.announcements-list {
+  display: grid;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.announcement-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 18px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.announcement-card h3 {
+  margin: 10px 0;
+  color: #1f4f46;
+}
+
+.announcement-card p {
+  margin: 8px 0;
+  white-space: pre-line;
+}
+
+.announcement-card small {
+  display: inline-block;
+  margin-top: 8px;
+  color: #6b7280;
+}
+
+.announcement-category {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 6px 11px;
+  background: #e8f3f0;
+  color: #1f4f46;
+  font-size: 0.78rem;
+  font-weight: 700;
+}

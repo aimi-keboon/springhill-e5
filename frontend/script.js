@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwiAn-YLsiMbItVm2ik_CKgAaN5ZlBTjANGTwP1xYMYJMnvPGiG9S9teVkcUeX7-xjGlQ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbziXv1mxBu2mthHl4nYf2-dNBPId-SMu7UGc59keoJKOUoxzlXwoOsITzetfAjsQro9sQ/exec";
 
 function showSection(sectionId) {
   const sections = document.querySelectorAll(".panel");
@@ -464,8 +464,46 @@ async function submitPaymentLookupForm(event) {
     statusBox.textContent = "Unable to check payment status: " + error.message;
   }
 }
+async function loadPostedAnnouncements() {
+  const announcementsList = document.getElementById("announcementsList");
+
+  if (!announcementsList) return;
+
+  announcementsList.innerHTML = "<p>Loading announcements...</p>";
+
+  try {
+    const response = await fetch(`${API_URL}?action=getPostedAnnouncements`);
+    const result = await response.json();
+
+    if (!result.success) {
+      announcementsList.innerHTML = `<p>Unable to load announcements: ${result.message}</p>`;
+      return;
+    }
+
+    const announcements = result.data.announcements || [];
+
+    if (announcements.length === 0) {
+      announcementsList.innerHTML = "<p>No announcements available at the moment.</p>";
+      return;
+    }
+
+    announcementsList.innerHTML = announcements.map((announcement) => {
+      return `
+        <article class="announcement-card">
+          <span class="announcement-category">${announcement.category || "General"}</span>
+          <h3>${announcement.title || "Untitled Announcement"}</h3>
+          <p>${announcement.content || ""}</p>
+          <small>Posted on ${formatDisplayDate(announcement.postedAt)}</small>
+        </article>
+      `;
+    }).join("");
+  } catch (error) {
+    announcementsList.innerHTML = `<p>Unable to load announcements: ${error.message}</p>`;
+  }
+}
 document.addEventListener("DOMContentLoaded", () => {
   testBackendConnection();
+  loadPostedAnnouncements();
   loadApprovedEvents();
 
   const residentForm = document.getElementById("residentForm");
