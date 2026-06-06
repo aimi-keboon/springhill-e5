@@ -309,6 +309,19 @@ function closeOfferModal() {
 
   modal.classList.add("hidden");
 }
+function normalizeExternalLink(url) {
+  if (!url) return "";
+
+  const trimmedUrl = String(url).trim();
+
+  if (!trimmedUrl) return "";
+
+  if (trimmedUrl.startsWith("http://") || trimmedUrl.startsWith("https://")) {
+    return trimmedUrl;
+  }
+
+  return "https://" + trimmedUrl;
+}
 function renderApprovedEvents() {
   const eventsList = document.getElementById("approvedEventsList");
   const pagination = document.getElementById("eventsPagination");
@@ -338,9 +351,11 @@ function renderApprovedEvents() {
       ? `<img src="${event.eventPosterUrl}" alt="${event.eventTitle}" class="event-poster" />`
       : "";
 
-    const registrationButton = event.registrationLink
-      ? `<a href="${event.registrationLink}" target="_blank" class="event-link">Register / Contact</a>`
-      : "";
+    const registrationUrl = normalizeExternalLink(event.registrationLink);
+
+const registrationButton = registrationUrl
+  ? `<a href="${registrationUrl}" target="_blank" rel="noopener noreferrer" class="event-link">Register / Contact</a>`
+  : "";
 
     const offerButton = event.residentOfferAvailable === "Yes"
   ? `
