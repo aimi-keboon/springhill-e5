@@ -1225,7 +1225,17 @@ function goBackToAnnouncements() {
     tabButtons[0].classList.add("active");
   }
 }
+function setupModalOutsideClickClose() {
+  const modals = document.querySelectorAll(".auth-modal");
 
+  modals.forEach((modal) => {
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        modal.classList.add("hidden");
+      }
+    });
+  });
+}
 document.addEventListener("DOMContentLoaded", () => {
   testBackendConnection();
   showPaymentRedirectStatus();
@@ -1233,6 +1243,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadApprovedEvents();
   updateBannerImage();
   loadLoginSession();
+  setupModalOutsideClickClose();
 
   const residentForm = document.getElementById("residentForm");
 
