@@ -919,19 +919,19 @@ td {
 
   .tab-nav {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  padding: 6px;
-  border-radius: 18px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  padding: 5px;
+  border-radius: 16px;
   overflow: visible;
 }
 
 .tab-button {
   flex: none;
-  white-space: normal;
-  padding: 8px 5px;
-  font-size: 0.58rem;
-  line-height: 1.15;
+  white-space: nowrap;
+  padding: 7px 3px;
+  font-size: 0.48rem;
+  line-height: 1;
   text-align: center;
 }
 
@@ -1367,5 +1367,97 @@ td {
 
   .billing-panel .payment-result {
     width: 92%;
+  }
+}
+/* HOME DECORATION */
+
+/* HOME DECORATION */
+
+.home-panel {
+  position: relative;
+  overflow: visible;
+  min-height: 285px;
+}
+
+.home-panel h2,
+.home-panel p {
+  position: relative;
+  z-index: 2;
+}
+
+.home-panel h2 {
+  width: 78%;
+  margin-left: 70px;
+  margin-right: 120px;
+  font-size: 1.35rem;
+  line-height: 1.25;
+}
+
+.home-panel p {
+  width: auto;
+  margin-left: 70px;
+  margin-right: 150px;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.home-decoration {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  object-fit: contain;
+}
+
+.home-decoration-right-center {
+  top: 46%;
+  right: -38px;
+  width: 155px;
+  transform: translateY(-50%);
+}
+
+.home-decoration-bottom-right {
+  left: -38px;
+  bottom: -28px;
+  width: 105px;
+  transform: none;
+}
+
+@media (max-width: 760px) {
+  .home-panel {
+    overflow: visible;
+    min-height: 315px;
+  }
+
+  .home-panel h2 {
+    width: auto;
+    margin-left: 42px;
+    margin-right: 70px;
+    font-size: 1.02rem;
+    line-height: 1.25;
+  }
+
+  .home-panel p {
+    width: auto;
+    margin-left: 42px;
+    margin-right: 70px;
+    font-size: 0.7rem;
+    line-height: 1.32;
+    text-align: justify;
+  }
+
+  .home-decoration-right-center {
+    top: 45%;
+    right: -24px;
+    width: 82px;
+    transform: translateY(-50%);
+  }
+
+  .home-decoration-bottom-right {
+    display: block;
+    left: -20px;
+    bottom: -18px;
+    width: 72px;
   }
 }

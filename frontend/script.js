@@ -1345,8 +1345,13 @@ function updateLoggedInUi() {
   const announcementsTabButton = document.getElementById("announcementsTabButton");
   const eventsTabButton = document.getElementById("eventsTabButton");
   const profileTabButton = document.getElementById("profileTabButton");
+  const homeGreeting = document.getElementById("homeGreeting");
 
   if (currentLoggedInResident) {
+    if (homeGreeting) {
+      homeGreeting.textContent = `Welcome to Bandar Springhill E5, ${currentLoggedInResident.fullName}`;
+    }
+
     loginSignupButton?.classList.add("hidden");
     logoutButton?.classList.remove("hidden");
 
@@ -1354,6 +1359,10 @@ function updateLoggedInUi() {
     eventsTabButton?.classList.remove("hidden");
     profileTabButton?.classList.remove("hidden");
   } else {
+    if (homeGreeting) {
+      homeGreeting.textContent = "Welcome to Bandar Springhill E5";
+    }
+
     loginSignupButton?.classList.remove("hidden");
     logoutButton?.classList.add("hidden");
 
