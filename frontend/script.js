@@ -898,8 +898,18 @@ function renderBillingDetails(totalDueValue = null) {
   const visiblePayments = currentPayments.slice(startIndex, startIndex + BILLING_ITEMS_PER_PAGE);
 
   const paymentRows = visiblePayments.length
-    ? visiblePayments.map((payment) => `
+  ? visiblePayments.map((payment) => {
+      const canPay = payment.status === "Due" || payment.status === "Overdue";
+
+      return `
         <tr>
+          <td>
+            ${
+              canPay
+                ? `<input type="checkbox" class="bill-checkbox" value="${payment.paymentId}" onchange="updateSelectedBillSummary()" />`
+                : ""
+            }
+          </td>
           <td>${formatPaymentPeriod(payment.paymentPeriod)}</td>
           <td>${payment.paymentType || "-"}</td>
           <td>RM${Number(payment.amount || 0).toFixed(2)}</td>
@@ -907,18 +917,20 @@ function renderBillingDetails(totalDueValue = null) {
           <td>${formatDisplayDate(payment.paidAt)}</td>
           <td>${payment.receiptNo || "-"}</td>
           <td>
-            ${payment.status === "Due" || payment.status === "Overdue"
-              ? `<button type="button" class="small-button" onclick="payMaintenance('${payment.paymentId}', '${currentLoggedInResident.email}', this)">Pay Now</button>`
-              : "-"
+            ${
+              canPay
+                ? `<button type="button" class="small-button" onclick="payMaintenance('${payment.paymentId}', '${currentLoggedInResident.email}', this)">Pay Now</button>`
+                : "-"
             }
           </td>
         </tr>
-      `).join("")
-    : `
-        <tr>
-          <td colspan="7">No payment records found.</td>
-        </tr>
       `;
+    }).join("")
+  : `
+      <tr>
+        <td colspan="8">No payment records found.</td>
+      </tr>
+    `;
 
   resultBox.innerHTML = `
     <div class="profile-summary">
@@ -935,19 +947,26 @@ function renderBillingDetails(totalDueValue = null) {
         Update Profile
       </button>
     </div>
+<div class="selected-bills-bar">
+  <span id="selectedBillSummary">No bills selected.</span>
 
+  <button type="button" id="paySelectedButton" class="small-button" onclick="paySelectedBills(this)" disabled>
+    Pay Selected
+  </button>
+</div>
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
-            <th>Period</th>
-            <th>Type</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Paid At</th>
-            <th>Receipt No.</th>
-            <th>Action</th>
-          </tr>
+  <th>Select</th>
+  <th>Period</th>
+  <th>Type</th>
+  <th>Amount</th>
+  <th>Status</th>
+  <th>Paid At</th>
+  <th>Receipt No.</th>
+  <th>Action</th>
+</tr>
         </thead>
         <tbody>
           ${paymentRows}
@@ -973,6 +992,89 @@ function renderBillingDetails(totalDueValue = null) {
 function changeBillingPage(page) {
   currentBillingPage = page;
   renderBillingDetails();
+}
+function getSelectedBillIds() {
+  return Array.from(document.querySelectorAll(".bill-checkbox:checked"))
+    .map((checkbox) => checkbox.value);
+}
+
+function updateSelectedBillSummary() {
+  const selectedIds = getSelectedBillIds();
+  const summaryBox = document.getElementById("selectedBillSummary");
+  const paySelectedButton = document.getElementById("paySelectedButton");
+
+  if (!summaryBox || !paySelectedButton) return;
+
+  const selectedPayments = currentPayments.filter((payment) => {
+    return selectedIds.includes(payment.paymentId);
+  });
+
+  const totalSelected = selectedPayments.reduce((sum, payment) => {
+    return sum + Number(payment.amount || 0);
+  }, 0);
+
+  if (selectedIds.length === 0) {
+    summaryBox.textContent = "No bills selected.";
+    paySelectedButton.disabled = true;
+    return;
+  }
+
+  summaryBox.textContent =
+    `${selectedIds.length} bill(s) selected · Total RM${totalSelected.toFixed(2)}`;
+
+  paySelectedButton.disabled = false;
+}
+
+async function paySelectedBills(buttonElement) {
+  const selectedIds = getSelectedBillIds();
+
+  if (selectedIds.length === 0) {
+    alert("Please select at least one unpaid bill.");
+    return;
+  }
+
+  const originalText = buttonElement ? buttonElement.textContent : "Pay Selected";
+
+  if (buttonElement) {
+    buttonElement.disabled = true;
+    buttonElement.textContent = "Loading...";
+    buttonElement.classList.add("loading-button");
+  }
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "createMultipleMaintenanceCheckout",
+        paymentIds: selectedIds,
+        email: currentLoggedInResident.email,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      alert("Unable to create checkout: " + result.message);
+
+      if (buttonElement) {
+        buttonElement.disabled = false;
+        buttonElement.textContent = originalText;
+        buttonElement.classList.remove("loading-button");
+      }
+
+      return;
+    }
+
+    window.location.href = result.data.checkoutUrl;
+  } catch (error) {
+    alert("Unable to create checkout: " + error.message);
+
+    if (buttonElement) {
+      buttonElement.disabled = false;
+      buttonElement.textContent = originalText;
+      buttonElement.classList.remove("loading-button");
+    }
+  }
 }
 async function payMaintenance(paymentId, email, buttonElement) {
   const originalText = buttonElement ? buttonElement.textContent : "Pay Now";
