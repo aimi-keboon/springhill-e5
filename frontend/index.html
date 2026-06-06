@@ -71,8 +71,8 @@
           <img id="bannerImage" src="assets/banners/banner-1.jpg" alt="SpringHill E5 banner" />
 
           <div class="banner-controls">
-            <button type="button" onclick="previousBanner()">Previous</button>
-            <button type="button" onclick="nextBanner()">Next</button>
+            <button type="button" onclick="previousBanner()"> < </button>
+            <button type="button" onclick="nextBanner()"> > </button>
           </div>
         </div>
       </section>
@@ -281,6 +281,33 @@
       </section>
     </section>
   </main>
+  <div id="offerModal" class="auth-modal hidden">
+  <div class="auth-card offer-modal-card">
+    <button type="button" class="auth-close" onclick="closeOfferModal()">×</button>
+
+    <p class="eyebrow">Resident Offer</p>
+    <h2 id="offerModalTitle">Special Offer</h2>
+
+    <div class="offer-popup-content">
+      <p id="offerModalDescription"></p>
+
+      <div class="offer-price-grid">
+        <p>
+          <b>Normal Price</b>
+          <span id="offerModalNormalPrice">-</span>
+        </p>
+
+        <p>
+          <b>Resident Price</b>
+          <span id="offerModalResidentPrice">-</span>
+        </p>
+      </div>
+
+      <p id="offerModalPromoCode" class="promo-code-box"></p>
+      <p id="offerModalExpiry"></p>
+    </div>
+  </div>
+</div>
 <div id="profileUpdateModal" class="auth-modal hidden">
   <div class="auth-card">
     <button type="button" class="auth-close" onclick="closeProfileUpdateModal()">×</button>
@@ -364,18 +391,14 @@
       <button type="button" class="auth-close" onclick="closeAuthModal()">×</button>
 
       <div class="auth-tabs">
-        <button type="button" class="auth-tab active" onclick="showAuthScreen('loginScreen', this)">
-          Login
-        </button>
+  <button type="button" class="auth-tab active" onclick="showAuthScreen('loginScreen', this)">
+    Login
+  </button>
 
-        <button type="button" class="auth-tab" onclick="showAuthScreen('signupScreen', this)">
-          Sign Up
-        </button>
-
-        <button type="button" class="auth-tab" onclick="showAuthScreen('resetScreen', this)">
-          Reset Password
-        </button>
-      </div>
+  <button type="button" class="auth-tab" onclick="showAuthScreen('signupScreen', this)">
+    Sign Up
+  </button>
+</div>
 
       <section id="loginScreen" class="auth-screen active">
         <h2>Resident Login</h2>
@@ -394,6 +417,18 @@
           <button type="submit">Login & View Payment</button>
 
           <p id="paymentLookupStatus" class="form-status"></p>
+          <div class="auth-links">
+  <button type="button" class="text-button" onclick="showResetPasswordScreen()">
+    Forgot password?
+  </button>
+
+  <p>
+    Don’t have an account?
+    <button type="button" class="text-button" onclick="switchToSignupScreen()">
+      Sign up
+    </button>
+  </p>
+</div>
         </form>
 
         
@@ -478,6 +513,14 @@
           <button type="submit">Submit Registration</button>
 
           <p id="residentFormStatus" class="form-status"></p>
+          <div class="auth-links">
+  <p>
+    Already have an account?
+    <button type="button" class="text-button" onclick="switchToLoginScreen()">
+      Login
+    </button>
+  </p>
+</div>
         </form>
       </section>
 
@@ -508,6 +551,14 @@
           <button type="submit">Reset Password</button>
 
           <p id="resetPasswordStatus" class="form-status"></p>
+          <div class="auth-links">
+  <p>
+    Remember your password?
+    <button type="button" class="text-button" onclick="switchToLoginScreen()">
+      Back to login
+    </button>
+  </p>
+</div>
         </form>
       </section>
     </div>

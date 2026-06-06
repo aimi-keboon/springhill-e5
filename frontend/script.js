@@ -84,7 +84,29 @@ function showAuthScreen(screenId, clickedButton) {
   document.getElementById(screenId).classList.add("active");
   clickedButton.classList.add("active");
 }
+function switchToSignupScreen() {
+  const signupButton = document.querySelectorAll(".auth-tab")[1];
+  showAuthScreen("signupScreen", signupButton);
+}
 
+function switchToLoginScreen() {
+  const loginButton = document.querySelectorAll(".auth-tab")[0];
+  showAuthScreen("loginScreen", loginButton);
+}
+
+function showResetPasswordScreen() {
+  const authTabs = document.querySelectorAll(".auth-tab");
+
+  authTabs.forEach((tab) => {
+    tab.classList.remove("active");
+  });
+
+  document.querySelectorAll(".auth-screen").forEach((screen) => {
+    screen.classList.remove("active");
+  });
+
+  document.getElementById("resetScreen").classList.add("active");
+}
 async function testBackendConnection() {
   const statusBox = document.getElementById("backendStatus");
 
@@ -244,7 +266,41 @@ async function loadApprovedEvents() {
     eventsList.innerHTML = `<p>Unable to load events: ${error.message}</p>`;
   }
 }
+function openOfferModal(event) {
+  const modal = document.getElementById("offerModal");
 
+  if (!modal) return;
+
+  document.getElementById("offerModalTitle").textContent =
+    event.residentOfferTitle || "Special Offer for Residents";
+
+  document.getElementById("offerModalDescription").textContent =
+    event.residentOfferDescription || "No offer description provided.";
+
+  document.getElementById("offerModalNormalPrice").textContent =
+    event.normalPrice || "-";
+
+  document.getElementById("offerModalResidentPrice").textContent =
+    event.residentPrice || "-";
+
+  document.getElementById("offerModalPromoCode").textContent = event.promoCode
+    ? `Promo Code: ${event.promoCode}`
+    : "No promo code required.";
+
+  document.getElementById("offerModalExpiry").textContent = event.offerExpiryDate
+    ? `Offer valid until ${formatDisplayDate(event.offerExpiryDate)}`
+    : "";
+
+  modal.classList.remove("hidden");
+}
+
+function closeOfferModal() {
+  const modal = document.getElementById("offerModal");
+
+  if (!modal) return;
+
+  modal.classList.add("hidden");
+}
 function renderApprovedEvents() {
   const eventsList = document.getElementById("approvedEventsList");
   const pagination = document.getElementById("eventsPagination");
@@ -278,33 +334,43 @@ function renderApprovedEvents() {
       ? `<a href="${event.registrationLink}" target="_blank" class="event-link">Register / Contact</a>`
       : "";
 
-    const offerDetails = event.residentOfferAvailable === "Yes"
-      ? `
-        <div class="resident-offer">
-          <strong>${event.residentOfferTitle || "Special Offer for Residents"}</strong>
-          <p>${event.residentOfferDescription || ""}</p>
-          ${event.normalPrice ? `<p><b>Normal Price:</b> ${event.normalPrice}</p>` : ""}
-          ${event.residentPrice ? `<p><b>Resident Price:</b> ${event.residentPrice}</p>` : ""}
-          ${event.promoCode ? `<p><b>Promo Code:</b> ${event.promoCode}</p>` : ""}
-        </div>
-      `
-      : "";
+    const offerButton = event.residentOfferAvailable === "Yes"
+  ? `
+    <button 
+      type="button" 
+      class="ticket-offer-button"
+      onclick='openOfferModal(${JSON.stringify(event).replace(/'/g, "&apos;")})'
+    >
+      View Offer
+    </button>
+  `
+  : "";
 
     return `
-      <article class="event-card">
-        ${poster}
-        <div class="event-content">
-          ${offerBadge}
-          <h3>${event.eventTitle || "Untitled Event"}</h3>
-          <p>${event.eventDescription || ""}</p>
-          <p><b>Date:</b> ${formatDisplayDate(event.eventDate)}</p>
-          <p><b>Time:</b> ${formatDisplayTime(event.eventTime)}</p>
-          <p><b>Location:</b> ${event.eventLocation || "-"}</p>
-          ${offerDetails}
-          ${registrationButton}
+  <article class="event-card ticket-card">
+    <div class="ticket-main ${poster ? "" : "no-poster"}">
+      ${poster ? `<div class="ticket-poster-wrap">${poster}</div>` : ""}
+
+      <div class="event-content ticket-content">
+        ${offerBadge}
+        <h3>${event.eventTitle || "Untitled Event"}</h3>
+        <p>${event.eventDescription || ""}</p>
+
+        <div class="ticket-meta">
+          <p><b>Date</b><span>${formatDisplayDate(event.eventDate)}</span></p>
+          <p><b>Time</b><span>${formatDisplayTime(event.eventTime)}</span></p>
+          <p><b>Location</b><span>${event.eventLocation || "-"}</span></p>
         </div>
-      </article>
-    `;
+      </div>
+    </div>
+
+    <div class="ticket-stub">
+      <p class="ticket-label">Entry Ticket</p>
+      ${offerButton}
+      ${registrationButton}
+    </div>
+  </article>
+`;
   }).join("");
 
   renderPagination(
