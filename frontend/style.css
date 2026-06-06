@@ -925,7 +925,16 @@ td {
   border-radius: 16px;
   overflow: visible;
 }
+.tab-nav.public-nav {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
 
+.tab-nav.public-nav .tab-button {
+  font-size: 0.62rem;
+  padding: 8px 14px;
+}
 .tab-button {
   flex: none;
   white-space: nowrap;
@@ -1460,4 +1469,13 @@ td {
     bottom: -18px;
     width: 72px;
   }
+}
+/* CENTER PUBLIC NAV */
+
+.tab-nav.public-nav {
+  justify-content: center;
+}
+
+.tab-nav.public-nav .tab-button {
+  flex: 0 0 auto;
 }

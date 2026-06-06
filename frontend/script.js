@@ -1303,7 +1303,11 @@ function loadLoginSession() {
   const savedPayments = localStorage.getItem("springhillPayments");
   const savedTotalDue = localStorage.getItem("springhillTotalDue");
 
-  if (!savedResident || !savedPassword) return;
+  if (!savedResident || !savedPassword) {
+  updateLoggedInUi();
+  showHomeTab();
+  return;
+}
 
   try {
     currentLoggedInResident = JSON.parse(savedResident);
@@ -1346,6 +1350,7 @@ function updateLoggedInUi() {
   const eventsTabButton = document.getElementById("eventsTabButton");
   const profileTabButton = document.getElementById("profileTabButton");
   const homeGreeting = document.getElementById("homeGreeting");
+  const tabNav = document.querySelector(".tab-nav");
 
   if (currentLoggedInResident) {
     if (homeGreeting) {
@@ -1358,6 +1363,8 @@ function updateLoggedInUi() {
     announcementsTabButton?.classList.remove("hidden");
     eventsTabButton?.classList.remove("hidden");
     profileTabButton?.classList.remove("hidden");
+
+    tabNav?.classList.remove("public-nav");
   } else {
     if (homeGreeting) {
       homeGreeting.textContent = "Welcome to Bandar Springhill E5";
@@ -1369,6 +1376,8 @@ function updateLoggedInUi() {
     announcementsTabButton?.classList.add("hidden");
     eventsTabButton?.classList.add("hidden");
     profileTabButton?.classList.add("hidden");
+
+    tabNav?.classList.add("public-nav");
   }
 }
 function showHomeTab() {
