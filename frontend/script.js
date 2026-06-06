@@ -1159,11 +1159,20 @@ function loadLoginSession() {
 
   try {
     currentLoggedInResident = JSON.parse(savedResident);
-    currentResidentPassword = savedPassword;
-    currentPayments = savedPayments ? JSON.parse(savedPayments) : [];
-    currentTotalDue = Number(savedTotalDue || 0);
+currentResidentPassword = savedPassword;
+currentPayments = savedPayments ? JSON.parse(savedPayments) : [];
+currentTotalDue = Number(savedTotalDue || 0);
 
-    updateLoggedInUi();
+updateLoggedInUi();
+renderBillingDetails(currentTotalDue);
+
+const paymentResult = document.getElementById("paymentResult");
+
+if (paymentResult) {
+  paymentResult.classList.remove("hidden");
+}
+
+refreshLoggedInBillingData();
   } catch (error) {
     clearLoginSession();
   }
@@ -1202,6 +1211,40 @@ function logoutResident() {
   clearLoginSession();
   updateLoggedInUi();
   goBackToAnnouncements();
+}
+async function refreshLoggedInBillingData() {
+  if (!currentLoggedInResident || !currentResidentPassword) return;
+
+  try {
+    const response = await fetch(
+      `${API_URL}?action=getResidentPayments&email=${encodeURIComponent(currentLoggedInResident.email)}&password=${encodeURIComponent(currentResidentPassword)}`
+    );
+
+    const result = await response.json();
+
+    if (!result.success) {
+      clearLoginSession();
+      updateLoggedInUi();
+      return;
+    }
+
+    currentLoggedInResident = result.data.resident;
+    currentPayments = result.data.payments || [];
+    currentTotalDue = Number(result.data.totalDue || 0);
+    currentBillingPage = 1;
+
+    saveLoginSession();
+    updateLoggedInUi();
+    renderBillingDetails(currentTotalDue);
+
+    const paymentResult = document.getElementById("paymentResult");
+
+    if (paymentResult) {
+      paymentResult.classList.remove("hidden");
+    }
+  } catch (error) {
+    console.log("Unable to refresh billing data:", error.message);
+  }
 }
 function showBillingPage() {
   const tabPanels = document.querySelectorAll(".tab-panel");
