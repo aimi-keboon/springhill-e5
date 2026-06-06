@@ -21,6 +21,7 @@ const bannerImages = [
 ];
 
 let currentBannerIndex = 0;
+let bannerInterval = null;
 
 function showTab(tabId, clickedButton) {
   const tabPanels = document.querySelectorAll(".tab-panel");
@@ -436,7 +437,15 @@ function updateBannerImage() {
 
   bannerImage.src = bannerImages[currentBannerIndex];
 }
+function startBannerCarousel() {
+  if (bannerInterval) {
+    clearInterval(bannerInterval);
+  }
 
+  bannerInterval = setInterval(() => {
+    nextBanner();
+  }, 3000);
+}
 function addTransportRow() {
   const transportRows = document.getElementById("transportRows");
 
@@ -1304,7 +1313,6 @@ document.addEventListener("DOMContentLoaded", () => {
   showPaymentRedirectStatus();
   loadPostedAnnouncements();
   loadApprovedEvents();
-  updateBannerImage();
   loadLoginSession();
   setupModalOutsideClickClose();
 

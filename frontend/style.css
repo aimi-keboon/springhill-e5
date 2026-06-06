@@ -284,23 +284,40 @@ button:hover,
   background: #f3f4f6;
 }
 
-.banner-carousel img {
+.sushi-carousel {
+  position: relative;
   width: 100%;
-  height: 320px;
-  object-fit: cover;
-  display: block;
 }
 
-.banner-controls {
+.banner-track {
   display: flex;
-  justify-content: center;
-  gap: 12px;
-  padding: 14px;
+  width: max-content;
+  gap: 16px;
+  padding: 12px;
+  animation: bannerBeltMove 22s linear infinite;
 }
 
-.banner-controls button {
-  background: #1f4f46;
-  color: white;
+.banner-track img {
+  width: 360px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 18px;
+  display: block;
+  flex: 0 0 auto;
+}
+
+.sushi-carousel:hover .banner-track {
+  animation-play-state: paused;
+}
+
+@keyframes bannerBeltMove {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 .form-card {
@@ -1053,4 +1070,15 @@ td {
   .auth-screen .form-card textarea {
     font-size: 16px !important;
   }
+  .banner-track {
+  gap: 10px;
+  padding: 10px;
+  animation-duration: 18s;
+}
+
+.banner-track img {
+  width: 240px;
+  height: 130px;
+  border-radius: 14px;
+}
 }
