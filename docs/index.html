@@ -16,9 +16,15 @@
         <h1>Community Portal</h1>
       </div>
 
-      <button type="button" class="login-button" onclick="openAuthModal('login')">
-        Login / Sign Up
-      </button>
+      <div class="topbar-actions">
+  <button type="button" id="loginSignupButton" class="login-button" onclick="openAuthModal('login')">
+    Login / Sign Up
+  </button>
+
+  <button type="button" id="logoutButton" class="login-button hidden" onclick="logoutResident()">
+    Logout
+  </button>
+</div>
     </header>
 
     <p id="backendStatus" class="status">Checking backend connection...</p>
@@ -32,6 +38,9 @@
       <button type="button" class="tab-button" onclick="showTab('eventsTab', this)">
         Events
       </button>
+      <button type="button" id="profileTabButton" class="tab-button hidden" onclick="showTab('billingPage', this)">
+  Profile / Billing
+</button>
 
       <button type="button" class="tab-button" onclick="showTab('eventApplicationTab', this)">
         Event Application
@@ -84,9 +93,7 @@
     </section>
 <section id="billingPage" class="tab-panel">
   <section class="panel">
-    <button type="button" class="back-button" onclick="goBackToAnnouncements()">
-      ← Back to Portal
-    </button>
+    
 
     <h2>Billing Details</h2>
 

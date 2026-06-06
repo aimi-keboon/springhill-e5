@@ -5,6 +5,7 @@ let allApprovedEvents = [];
 let currentPayments = [];
 let currentLoggedInResident = null;
 let currentResidentPassword = "";
+let currentTotalDue = 0;
 
 let currentAnnouncementPage = 1;
 let currentEventPage = 1;
@@ -932,15 +933,20 @@ async function submitPaymentLookupForm(event) {
     const resident = result.data.resident;
     const payments = result.data.payments || [];
     const totalDue = Number(result.data.totalDue || 0);
-    currentLoggedInResident = resident;
+
+currentLoggedInResident = resident;
 currentResidentPassword = password;
 currentPayments = payments;
+currentTotalDue = totalDue;
 currentBillingPage = 1;
+
+saveLoginSession();
+updateLoggedInUi();
 
     statusBox.textContent = "Login successful. Payment status loaded.";
     closeAuthModal();
     showBillingPage();
-    renderBillingDetails(totalDue);
+    renderBillingDetails(currentTotalDue);
 resultBox.classList.remove("hidden");
   } catch (error) {
     statusBox.textContent = "Unable to check payment status: " + error.message;
@@ -1047,6 +1053,69 @@ function formatPaymentPeriod(periodValue) {
 
   return textValue;
 }
+function saveLoginSession() {
+  if (!currentLoggedInResident || !currentResidentPassword) return;
+
+  localStorage.setItem("springhillResident", JSON.stringify(currentLoggedInResident));
+  localStorage.setItem("springhillResidentPassword", currentResidentPassword);
+  localStorage.setItem("springhillPayments", JSON.stringify(currentPayments));
+  localStorage.setItem("springhillTotalDue", String(currentTotalDue));
+}
+
+function loadLoginSession() {
+  const savedResident = localStorage.getItem("springhillResident");
+  const savedPassword = localStorage.getItem("springhillResidentPassword");
+  const savedPayments = localStorage.getItem("springhillPayments");
+  const savedTotalDue = localStorage.getItem("springhillTotalDue");
+
+  if (!savedResident || !savedPassword) return;
+
+  try {
+    currentLoggedInResident = JSON.parse(savedResident);
+    currentResidentPassword = savedPassword;
+    currentPayments = savedPayments ? JSON.parse(savedPayments) : [];
+    currentTotalDue = Number(savedTotalDue || 0);
+
+    updateLoggedInUi();
+  } catch (error) {
+    clearLoginSession();
+  }
+}
+
+function clearLoginSession() {
+  localStorage.removeItem("springhillResident");
+  localStorage.removeItem("springhillResidentPassword");
+  localStorage.removeItem("springhillPayments");
+  localStorage.removeItem("springhillTotalDue");
+
+  currentLoggedInResident = null;
+  currentResidentPassword = "";
+  currentPayments = [];
+  currentTotalDue = 0;
+  currentBillingPage = 1;
+}
+
+function updateLoggedInUi() {
+  const loginSignupButton = document.getElementById("loginSignupButton");
+  const logoutButton = document.getElementById("logoutButton");
+  const profileTabButton = document.getElementById("profileTabButton");
+
+  if (currentLoggedInResident) {
+    loginSignupButton?.classList.add("hidden");
+    logoutButton?.classList.remove("hidden");
+    profileTabButton?.classList.remove("hidden");
+  } else {
+    loginSignupButton?.classList.remove("hidden");
+    logoutButton?.classList.add("hidden");
+    profileTabButton?.classList.add("hidden");
+  }
+}
+
+function logoutResident() {
+  clearLoginSession();
+  updateLoggedInUi();
+  goBackToAnnouncements();
+}
 function showBillingPage() {
   const tabPanels = document.querySelectorAll(".tab-panel");
   const tabButtons = document.querySelectorAll(".tab-button");
@@ -1097,6 +1166,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadPostedAnnouncements();
   loadApprovedEvents();
   updateBannerImage();
+  loadLoginSession();
 
   const residentForm = document.getElementById("residentForm");
 
