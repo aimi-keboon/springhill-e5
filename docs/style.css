@@ -1036,3 +1036,21 @@ td {
 .auth-tabs {
   margin-bottom: 18px;
 }
+/* PREVENT MOBILE INPUT ZOOM */
+
+@media (max-width: 760px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  .form-card input,
+  .form-card select,
+  .form-card textarea,
+  .auth-screen .form-card input,
+  .auth-screen .form-card select,
+  .auth-screen .form-card textarea {
+    font-size: 16px !important;
+  }
+}
