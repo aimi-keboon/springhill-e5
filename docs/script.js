@@ -1178,10 +1178,10 @@ currentBillingPage = 1;
 saveLoginSession();
 updateLoggedInUi();
 
-    statusBox.textContent = "Login successful. Payment status loaded.";
-    closeAuthModal();
-    showBillingPage();
-    renderBillingDetails(currentTotalDue);
+    statusBox.textContent = "Login successful.";
+closeAuthModal();
+showHomeTab();
+renderBillingDetails(currentTotalDue);
 resultBox.classList.remove("hidden");
   } catch (error) {
     statusBox.textContent = "Unable to check payment status: " + error.message;
