@@ -13,6 +13,13 @@ let currentBillingPage = 1;
 
 const ITEMS_PER_PAGE = 5;
 const BILLING_ITEMS_PER_PAGE = 10;
+let eventPricingSettings = {
+  eventWebsiteFee7Days: 50,
+  eventWebsiteFee14Days: 80,
+  eventWebsiteFee30Days: 120,
+  eventWhatsappBlastFee: 20,
+  eventResidentDiscountPercent: 50,
+};
 
 const bannerImages = [
   "assets/banners/banner-1.jpg",
@@ -575,7 +582,19 @@ async function submitResidentForm(event) {
     statusBox.textContent = "Submission failed: " + error.message;
   }
 }
+async function loadEventPricingSettings() {
+  try {
+    const response = await fetch(`${API_URL}?action=getEventPricingSettings`);
+    const result = await response.json();
 
+    if (result.success && result.data) {
+      eventPricingSettings = result.data;
+      calculateEventFeePreview();
+    }
+  } catch (error) {
+    console.log("Unable to load event pricing settings:", error.message);
+  }
+}
 function calculateEventFeePreview() {
   const eventForm = document.getElementById("eventForm");
   const feePreview = document.getElementById("eventFeePreview");
@@ -588,16 +607,17 @@ function calculateEventFeePreview() {
 
   let websiteFee = 0;
 
-  if (duration === 7) websiteFee = 50;
-  if (duration === 14) websiteFee = 80;
-  if (duration === 30) websiteFee = 120;
+if (duration === 7) websiteFee = Number(eventPricingSettings.eventWebsiteFee7Days || 0);
+if (duration === 14) websiteFee = Number(eventPricingSettings.eventWebsiteFee14Days || 0);
+if (duration === 30) websiteFee = Number(eventPricingSettings.eventWebsiteFee30Days || 0);
 
-  const whatsappFee = blastCount * 20;
-  let totalFee = websiteFee + whatsappFee;
+const whatsappFee = blastCount * Number(eventPricingSettings.eventWhatsappBlastFee || 0);
+let totalFee = websiteFee + whatsappFee;
 
-  if (organiserType === "Resident / Member") {
-    totalFee = totalFee * 0.5;
-  }
+if (organiserType === "Resident / Member") {
+  const discountPercent = Number(eventPricingSettings.eventResidentDiscountPercent || 0);
+  totalFee = totalFee * ((100 - discountPercent) / 100);
+}
 
   if (!organiserType || !duration || eventForm.whatsappBlastCount.value === "") {
     feePreview.textContent = "Please select organiser type, duration, and WhatsApp blast count.";
@@ -1313,6 +1333,7 @@ document.addEventListener("DOMContentLoaded", () => {
   showPaymentRedirectStatus();
   loadPostedAnnouncements();
   loadApprovedEvents();
+  loadEventPricingSettings();
   loadLoginSession();
   setupModalOutsideClickClose();
 
