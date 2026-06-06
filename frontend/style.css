@@ -5,7 +5,12 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f5f7fb;
+  background:
+    linear-gradient(rgba(245, 247, 251, 0.86), rgba(245, 247, 251, 0.86)),
+    url("assets/images/background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   color: #1f2937;
 }
 
