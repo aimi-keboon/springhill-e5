@@ -879,7 +879,7 @@ function renderBillingDetails(totalDueValue = null) {
           <td>${payment.receiptNo || "-"}</td>
           <td>
             ${payment.status === "Due" || payment.status === "Overdue"
-              ? `<button type="button" class="small-button" onclick="payMaintenance('${payment.paymentId}', '${currentLoggedInResident.email}')">Pay Now</button>`
+              ? `<button type="button" class="small-button" onclick="payMaintenance('${payment.paymentId}', '${currentLoggedInResident.email}', this)">Pay Now</button>`
               : "-"
             }
           </td>
@@ -945,7 +945,15 @@ function changeBillingPage(page) {
   currentBillingPage = page;
   renderBillingDetails();
 }
-async function payMaintenance(paymentId, email) {
+async function payMaintenance(paymentId, email, buttonElement) {
+  const originalText = buttonElement ? buttonElement.textContent : "Pay Now";
+
+  if (buttonElement) {
+    buttonElement.disabled = true;
+    buttonElement.textContent = "Loading...";
+    buttonElement.classList.add("loading-button");
+  }
+
   try {
     const response = await fetch(API_URL, {
       method: "POST",
@@ -960,12 +968,25 @@ async function payMaintenance(paymentId, email) {
 
     if (!result.success) {
       alert("Unable to create payment checkout: " + result.message);
+
+      if (buttonElement) {
+        buttonElement.disabled = false;
+        buttonElement.textContent = originalText;
+        buttonElement.classList.remove("loading-button");
+      }
+
       return;
     }
 
     window.location.href = result.data.checkoutUrl;
   } catch (error) {
     alert("Unable to create payment checkout: " + error.message);
+
+    if (buttonElement) {
+      buttonElement.disabled = false;
+      buttonElement.textContent = originalText;
+      buttonElement.classList.remove("loading-button");
+    }
   }
 }
 
@@ -1237,7 +1258,6 @@ function setupModalOutsideClickClose() {
   });
 }
 document.addEventListener("DOMContentLoaded", () => {
-  testBackendConnection();
   showPaymentRedirectStatus();
   loadPostedAnnouncements();
   loadApprovedEvents();

@@ -17,9 +17,38 @@ body.modal-open {
 }
 
 .app-shell {
-  width: min(1180px, 92%);
+  width: min(980px, 88%);
   margin: 0 auto;
-  padding: 28px 0 56px;
+  padding: 20px 0 40px;
+}
+
+.app-shell {
+  font-size: 0.82rem;
+}
+
+.panel {
+  padding: 20px;
+}
+
+.topbar {
+  padding: 18px;
+}
+
+h1 {
+  font-size: clamp(1.4rem, 3vw, 2.4rem);
+}
+
+button,
+.event-link {
+  padding: 9px 14px;
+  font-size: 0.82rem;
+}
+
+.form-card input,
+.form-card select,
+.form-card textarea {
+  padding: 10px 12px;
+  font-size: 0.88rem;
 }
 
 .topbar {
@@ -871,9 +900,23 @@ td {
     border-radius: 22px;
   }
 
-  .tab-button {
-    flex: 1 1 100%;
-  }
+  .tab-nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 6px;
+  border-radius: 18px;
+  overflow: visible;
+}
+
+.tab-button {
+  flex: none;
+  white-space: normal;
+  padding: 8px 5px;
+  font-size: 0.58rem;
+  line-height: 1.15;
+  text-align: center;
+}
 
   .panel {
     padding: 22px;
@@ -910,4 +953,86 @@ td {
   .profile-summary {
     flex-direction: column;
   }
+}
+/* COMPACT FORMS */
+
+.form-card {
+  gap: 12px;
+}
+
+.form-card label {
+  gap: 5px;
+  font-size: 0.82rem;
+}
+
+.form-card input,
+.form-card select,
+.form-card textarea {
+  padding: 8px 10px;
+  font-size: 0.82rem;
+  border-radius: 10px;
+}
+
+.form-card textarea {
+  min-height: 80px;
+}
+
+.form-card button[type="submit"] {
+  padding: 10px 14px;
+  font-size: 0.82rem;
+}
+
+.dynamic-section,
+.terms-box,
+.fee-preview {
+  padding: 12px;
+  border-radius: 14px;
+}
+
+.helper-text {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  margin: 6px 0 10px;
+}
+
+.repeat-row {
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.secondary-button,
+.remove-button {
+  padding: 8px 10px;
+  font-size: 0.76rem;
+}
+
+.auth-screen .form-card {
+  gap: 12px;
+}
+
+.auth-screen .form-card input,
+.auth-screen .form-card select,
+.auth-screen .form-card textarea {
+  padding: 9px 11px;
+  font-size: 0.82rem;
+  border-radius: 11px;
+}
+
+.auth-screen .form-card > button[type="submit"] {
+  padding: 11px 14px;
+  font-size: 0.84rem;
+  border-radius: 12px;
+}
+
+.auth-card {
+  padding: 26px;
+}
+
+.auth-screen h2 {
+  font-size: 1.45rem;
+  margin-bottom: 16px;
+}
+
+.auth-tabs {
+  margin-bottom: 18px;
 }
