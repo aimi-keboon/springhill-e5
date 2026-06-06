@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzrdU4BcJh8t8BNseDnM9gV_pSOmDjkl6xaCaOZIhPF_qzyPUHeXm5_BMFHNSsRx4-67Q/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxu8w6LGLpiR4I0iJCsHDNGI9kVDotAzyuH8_gXlbRS34h4me7TF9Ypll1KDSPBo1S9cA/exec";
 
 function showSection(sectionId) {
   const sections = document.querySelectorAll(".panel");
@@ -544,20 +544,34 @@ function showPaymentRedirectStatus() {
   const params = new URLSearchParams(window.location.search);
   const paymentStatus = params.get("payment");
   const paymentId = params.get("paymentId");
+  const eventId = params.get("eventId");
+  const type = params.get("type");
 
   if (paymentStatus === "success") {
-    statusBox.textContent = paymentId
-      ? `Payment successful. Receipt will be sent after confirmation. Payment ID: ${paymentId}`
-      : "Payment successful. Receipt will be sent after confirmation.";
+    if (type === "event") {
+      statusBox.textContent = eventId
+        ? `Event promotion payment successful. Your event will be published after confirmation. Event ID: ${eventId}`
+        : "Event promotion payment successful. Your event will be published after confirmation.";
+    } else {
+      statusBox.textContent = paymentId
+        ? `Payment successful. Receipt will be sent after confirmation. Payment ID: ${paymentId}`
+        : "Payment successful. Receipt will be sent after confirmation.";
+    }
 
     statusBox.classList.remove("hidden");
     statusBox.classList.add("success");
   }
 
   if (paymentStatus === "cancelled") {
-    statusBox.textContent = paymentId
-      ? `Payment cancelled. You may try again anytime. Payment ID: ${paymentId}`
-      : "Payment cancelled. You may try again anytime.";
+    if (type === "event") {
+      statusBox.textContent = eventId
+        ? `Event promotion payment cancelled. You may use the payment link again anytime. Event ID: ${eventId}`
+        : "Event promotion payment cancelled. You may use the payment link again anytime.";
+    } else {
+      statusBox.textContent = paymentId
+        ? `Payment cancelled. You may try again anytime. Payment ID: ${paymentId}`
+        : "Payment cancelled. You may try again anytime.";
+    }
 
     statusBox.classList.remove("hidden");
     statusBox.classList.add("error");
