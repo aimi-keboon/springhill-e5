@@ -10,371 +10,501 @@
 </head>
 <body>
   <main class="app-shell">
-    <section class="hero">
-      <p class="eyebrow">SpringHill E5</p>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">SpringHill E5</p>
+        <h1>Community Portal</h1>
+      </div>
 
-      <h1>Community Maintenance & Events Portal</h1>
+      <button type="button" class="login-button" onclick="openAuthModal('login')">
+        Login / Sign Up
+      </button>
+    </header>
 
-      <p class="hero-text">
-        A simple system for resident registration, maintenance payment tracking,
-        announcements, and community event promotions.
-      </p>
+    <p id="backendStatus" class="status">Checking backend connection...</p>
+    <p id="paymentRedirectStatus" class="status hidden"></p>
 
-      <div class="hero-actions">
-        <button type="button" onclick="showSection('registration')">
-          Register as Resident
+    <nav class="tab-nav">
+      <button type="button" class="tab-button active" onclick="showTab('announcementsTab', this)">
+        Announcements
+      </button>
+
+      <button type="button" class="tab-button" onclick="showTab('eventsTab', this)">
+        Events
+      </button>
+
+      <button type="button" class="tab-button" onclick="showTab('eventApplicationTab', this)">
+        Event Application
+      </button>
+    </nav>
+
+    <section id="announcementsTab" class="tab-panel active">
+      <section class="panel">
+        <h2>Official Announcements</h2>
+
+        <p>
+          Latest official updates from the SpringHill E5 committee.
+        </p>
+
+        <div id="announcementsList" class="announcements-list">
+          <p>Loading announcements...</p>
+        </div>
+
+        <div id="announcementsPagination" class="pagination"></div>
+      </section>
+    </section>
+
+    <section id="eventsTab" class="tab-panel">
+      <section class="panel">
+        <h2>Community Highlights</h2>
+
+        <div class="banner-carousel">
+          <img id="bannerImage" src="assets/banners/banner-1.jpg" alt="SpringHill E5 banner" />
+
+          <div class="banner-controls">
+            <button type="button" onclick="previousBanner()">Previous</button>
+            <button type="button" onclick="nextBanner()">Next</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Upcoming Community Events</h2>
+
+        <p>
+          Approved event promotions and resident offers will appear here.
+        </p>
+
+        <div id="approvedEventsList" class="events-grid">
+          <p>Loading approved events...</p>
+        </div>
+
+        <div id="eventsPagination" class="pagination"></div>
+      </section>
+    </section>
+<section id="billingPage" class="tab-panel">
+  <section class="panel">
+    <button type="button" class="back-button" onclick="goBackToAnnouncements()">
+      ← Back to Portal
+    </button>
+
+    <h2>Billing Details</h2>
+
+    <p>
+      View your registration fee, maintenance payment status, receipts, and outstanding balance.
+    </p>
+
+    <div id="paymentResult" class="payment-result hidden"></div>
+  </section>
+</section>
+    <section id="eventApplicationTab" class="tab-panel">
+      <section class="panel">
+        <h2>Event Promotion Submission</h2>
+
+        <p>
+          Submit your event to be reviewed and promoted on the community website.
+          Resident special offers are encouraged.
+        </p>
+
+        <form id="eventForm" class="form-card">
+          <label>
+            Organiser Type
+            <select name="organiserType" required>
+              <option value="">Select organiser type</option>
+              <option value="Resident / Member">Resident / Member</option>
+              <option value="Outsider / Business">Outsider / Business</option>
+            </select>
+          </label>
+
+          <label>
+            Organiser Name
+            <input type="text" name="organiserName" required />
+          </label>
+
+          <label>
+            Email
+            <input type="email" name="email" required />
+          </label>
+
+          <label>
+            Phone Number
+            <input type="tel" name="phone" required />
+          </label>
+
+          <label>
+            Unit / House Number
+            <input type="text" name="unitNo" placeholder="Required only for residents/members" />
+          </label>
+
+          <label>
+            Event Title
+            <input type="text" name="eventTitle" required />
+          </label>
+
+          <label>
+            Event Description
+            <textarea name="eventDescription" rows="5" required></textarea>
+          </label>
+
+          <label>
+            Event Date
+            <input type="date" name="eventDate" required />
+          </label>
+
+          <label>
+            Event Time
+            <input type="time" name="eventTime" required />
+          </label>
+
+          <label>
+            Event Location
+            <input type="text" name="eventLocation" required />
+          </label>
+
+          <label>
+            Event Poster URL
+            <input type="url" name="eventPosterUrl" placeholder="Paste image/poster link if available" />
+          </label>
+
+          <label>
+            Registration / Contact Link
+            <input type="url" name="registrationLink" placeholder="Example: Google Form, WhatsApp link, website link" />
+          </label>
+
+          <label>
+            Website Listing Duration
+            <select name="websiteDurationDays" required>
+              <option value="">Select duration</option>
+              <option value="7">7 days</option>
+              <option value="14">14 days</option>
+              <option value="30">30 days</option>
+            </select>
+          </label>
+
+          <label>
+            WhatsApp Blast Count
+            <select name="whatsappBlastCount" required>
+              <option value="">Select blast count</option>
+              <option value="0">No WhatsApp blast</option>
+              <option value="1">1 blast</option>
+              <option value="2">2 blasts</option>
+              <option value="3">3 blasts</option>
+            </select>
+          </label>
+
+          <label>
+            Preferred WhatsApp Blast Dates
+            <input type="text" name="preferredBlastDates" placeholder="Example: 10 June, 12 June, event day morning" />
+          </label>
+
+          <div class="fee-preview">
+            <strong>Estimated Promotion Fee:</strong>
+            <span id="eventFeePreview">Please select organiser type, duration, and WhatsApp blast count.</span>
+          </div>
+
+          <div class="dynamic-section">
+            <h3>Special Offer for Residents</h3>
+
+            <label>
+              Offer Available?
+              <select name="residentOfferAvailable" id="residentOfferAvailable" required>
+                <option value="">Select option</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </label>
+
+            <div id="residentOfferFields" class="hidden">
+              <label>
+                Offer Type
+                <select name="residentOfferTitle">
+                  <option value="">Select offer type</option>
+                  <option value="Discount for residents">Discount for residents</option>
+                  <option value="Resident-only price">Resident-only price</option>
+                  <option value="Free gift for residents">Free gift for residents</option>
+                  <option value="Early bird offer">Early bird offer</option>
+                  <option value="Family package">Family package</option>
+                  <option value="Buy 1 Free 1">Buy 1 Free 1</option>
+                  <option value="Free entry for children">Free entry for children</option>
+                  <option value="Free consultation">Free consultation</option>
+                  <option value="Priority booking for residents">Priority booking for residents</option>
+                  <option value="Other">Other</option>
+                </select>
+              </label>
+
+              <label>
+                Offer Description
+                <textarea name="residentOfferDescription" rows="4" placeholder="Explain what residents will get"></textarea>
+              </label>
+
+              <label>
+                Normal Price
+                <input type="text" name="normalPrice" placeholder="Example: RM100" />
+              </label>
+
+              <label>
+                Resident Price
+                <input type="text" name="residentPrice" placeholder="Example: RM80" />
+              </label>
+
+              <label>
+                Promo Code
+                <input type="text" name="promoCode" placeholder="Example: SPRINGHILL20" />
+              </label>
+
+              <label>
+                Offer Expiry Date
+                <input type="date" name="offerExpiryDate" />
+              </label>
+            </div>
+          </div>
+
+          <div class="terms-box">
+            <label class="checkbox-label">
+              <input type="checkbox" name="eventTermsAccepted" required />
+              I confirm that the event details provided are accurate and agree that all
+              submissions are subject to admin/committee approval before being published.
+            </label>
+          </div>
+
+          <button type="submit">Submit Event Promotion</button>
+
+          <p id="eventFormStatus" class="form-status"></p>
+        </form>
+      </section>
+    </section>
+  </main>
+<div id="profileUpdateModal" class="auth-modal hidden">
+  <div class="auth-card">
+    <button type="button" class="auth-close" onclick="closeProfileUpdateModal()">×</button>
+
+    <h2>Update Profile</h2>
+
+    <p>
+      Update your contact, transport, and family member details.
+    </p>
+
+    <form id="profileUpdateForm" class="form-card">
+      <label>
+        Full Name
+        <input type="text" name="updateFullName" required />
+      </label>
+
+      <label>
+        Phone Number
+        <input type="tel" name="updatePhone" required />
+      </label>
+
+      <label>
+        Unit / House Number
+        <input type="text" name="updateUnitNo" required />
+      </label>
+
+      <label>
+        Resident Type
+        <select name="updateResidentType" required>
+          <option value="">Select resident type</option>
+          <option value="Owner">Owner</option>
+          <option value="Tenant">Tenant</option>
+          <option value="Family Member">Family Member</option>
+        </select>
+      </label>
+
+      <details class="dynamic-section collapsible-section">
+  <summary>
+    <span>Transport / Vehicle Details</span>
+  </summary>
+
+  <div class="section-header inside-collapsible">
+    <p class="helper-text">
+      Add or update your car, motorcycle, van, lorry, or other vehicle details.
+    </p>
+
+    <button type="button" class="secondary-button" onclick="addProfileTransportRow()">
+      + Add Transport
+    </button>
+  </div>
+
+  <div id="profileTransportRows"></div>
+</details>
+
+      <details class="dynamic-section collapsible-section">
+  <summary>
+    <span>Family Members</span>
+  </summary>
+
+  <div class="section-header inside-collapsible">
+    <p class="helper-text">
+      Add or update family members living in the same unit.
+    </p>
+
+    <button type="button" class="secondary-button" onclick="addProfileFamilyRow()">
+      + Add Family Member
+    </button>
+  </div>
+
+  <div id="profileFamilyRows"></div>
+</details>
+
+      <button type="submit">Save Profile Changes</button>
+
+      <p id="profileUpdateStatus" class="form-status"></p>
+    </form>
+  </div>
+</div>
+  <div id="authModal" class="auth-modal hidden">
+    <div class="auth-card">
+      <button type="button" class="auth-close" onclick="closeAuthModal()">×</button>
+
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" onclick="showAuthScreen('loginScreen', this)">
+          Login
         </button>
 
-        <button type="button" onclick="showSection('events')">
-          Submit Event Promotion
+        <button type="button" class="auth-tab" onclick="showAuthScreen('signupScreen', this)">
+          Sign Up
+        </button>
+
+        <button type="button" class="auth-tab" onclick="showAuthScreen('resetScreen', this)">
+          Reset Password
         </button>
       </div>
 
-      <p id="backendStatus" class="status">Checking backend connection...</p>
-      <p id="paymentRedirectStatus" class="status hidden"></p>
-    </section>
+      <section id="loginScreen" class="auth-screen active">
+        <h2>Resident Login</h2>
 
-    <section id="registration" class="panel hidden">
-      <h2>Resident Registration</h2>
+        <form id="paymentLookupForm" class="form-card">
+          <label>
+            Registered Email
+            <input type="email" name="residentEmail" required placeholder="Enter your registered email" />
+          </label>
 
-      <p>
-        Submit your details for committee approval. Once approved, you will receive
-        login details by email.
-      </p>
+          <label>
+            Password
+            <input type="password" name="residentPassword" required placeholder="Enter your password" />
+          </label>
 
-      <form id="residentForm" class="form-card">
-        <label>
-          Full Name
-          <input type="text" name="fullName" required />
-        </label>
+          <button type="submit">Login & View Payment</button>
 
-        <label>
-          Email
-          <input type="email" name="email" required />
-        </label>
+          <p id="paymentLookupStatus" class="form-status"></p>
+        </form>
 
-        <label>
-          Phone Number
-          <input type="tel" name="phone" required />
-        </label>
+        
+      </section>
 
-        <label>
-          Unit / House Number
-          <input type="text" name="unitNo" required placeholder="Example: E5-12" />
-        </label>
+      <section id="signupScreen" class="auth-screen">
+        <h2>Resident Sign Up</h2>
 
-        <label>
-          Resident Type
-          <select name="residentType" required>
-            <option value="">Select resident type</option>
-            <option value="Owner">Owner</option>
-            <option value="Tenant">Tenant</option>
-            <option value="Family Member">Family Member</option>
-          </select>
-        </label>
+        <form id="residentForm" class="form-card">
+          <label>
+            Full Name
+            <input type="text" name="fullName" required />
+          </label>
 
-        <div class="dynamic-section">
-          <div class="section-header">
-            <h3>Transport / Vehicle Details</h3>
+          <label>
+            Email
+            <input type="email" name="email" required />
+          </label>
 
-            <button type="button" class="secondary-button" onclick="addTransportRow()">
-              + Add Transport
-            </button>
+          <label>
+            Phone Number
+            <input type="tel" name="phone" required />
+          </label>
+
+          <label>
+            Unit / House Number
+            <input type="text" name="unitNo" required placeholder="Example: E5-12" />
+          </label>
+
+          <label>
+            Resident Type
+            <select name="residentType" required>
+              <option value="">Select resident type</option>
+              <option value="Owner">Owner</option>
+              <option value="Tenant">Tenant</option>
+              <option value="Family Member">Family Member</option>
+            </select>
+          </label>
+
+          <div class="dynamic-section">
+            <div class="section-header">
+              <h3>Transport / Vehicle Details</h3>
+
+              <button type="button" class="secondary-button" onclick="addTransportRow()">
+                + Add Transport
+              </button>
+            </div>
+
+            <p class="helper-text">
+              Optional. Add this only if you want to register your car, motorcycle,
+              van, lorry, or other vehicle for neighbourhood records.
+            </p>
+
+            <div id="transportRows"></div>
           </div>
 
-          <p class="helper-text">
-            Optional. Add this only if you want to register your car, motorcycle,
-            bicycle, or other vehicle for neighbourhood records.
-          </p>
+          <div class="dynamic-section">
+            <div class="section-header">
+              <h3>Family Members</h3>
 
-          <div id="transportRows"></div>
-        </div>
+              <button type="button" class="secondary-button" onclick="addFamilyRow()">
+                + Add Family Member
+              </button>
+            </div>
 
-        <div class="dynamic-section">
-          <div class="section-header">
-            <h3>Family Members</h3>
+            <p class="helper-text">
+              Optional. Add family members living in the same unit for community
+              and security records.
+            </p>
 
-            <button type="button" class="secondary-button" onclick="addFamilyRow()">
-              + Add Family Member
-            </button>
+            <div id="familyRows"></div>
           </div>
 
-          <p class="helper-text">
-            Optional. Add family members living in the same unit for community
-            and security records.
-          </p>
+          <div class="terms-box">
+            <label class="checkbox-label">
+              <input type="checkbox" name="residentTermsAccepted" required />
+              I confirm that the information provided is accurate and agree that my
+              registration is subject to committee approval before account access is given.
+            </label>
+          </div>
 
-          <div id="familyRows"></div>
-        </div>
+          <button type="submit">Submit Registration</button>
 
-        <div class="terms-box">
-  <label class="checkbox-label">
-    <input type="checkbox" name="residentTermsAccepted" required />
-    I confirm that the information provided is accurate and agree that my
-    registration is subject to committee approval before account access is given.
-  </label>
-</div>
+          <p id="residentFormStatus" class="form-status"></p>
+        </form>
+      </section>
 
-<button type="submit">Submit Registration</button>
+      <section id="resetScreen" class="auth-screen">
+        <h2>Reset Password</h2>
 
-<p id="residentFormStatus" class="form-status"></p>
-      </form>
-    </section>
-    <section class="panel">
-  <h2>Official Announcements</h2>
+        <form id="resetPasswordForm" class="form-card">
+          <label>
+            Registered Email
+            <input type="email" name="resetEmail" required placeholder="Enter your registered email" />
+          </label>
 
-  <p>
-    Latest official updates from the SpringHill E5 committee will appear here.
-  </p>
-
-  <div id="announcementsList" class="announcements-list">
-    <p>Loading announcements...</p>
-  </div>
-</section>
-<section class="panel">
-  <h2>Upcoming Community Events</h2>
-
-  <p>
-    Approved event promotions and resident offers will appear here.
-  </p>
-
-  <div id="approvedEventsList" class="events-grid">
-    <p>Loading approved events...</p>
-  </div>
-</section>
-<section class="panel">
-  <h2>Reset Password</h2>
-
-  <p>
-    Approved residents can change their temporary password here. After reset,
-    use the new password to check payment records.
-  </p>
-
-  <form id="resetPasswordForm" class="form-card">
-    <label>
-      Registered Email
-      <input type="email" name="resetEmail" required placeholder="Enter your registered email" />
-    </label>
-
-    <label>
-      Temporary Password
-      <input type="password" name="temporaryPassword" required placeholder="Enter your temporary password" />
-    </label>
-
-    <label>
-      New Password
-      <input type="password" name="newPassword" required minlength="8" placeholder="Minimum 8 characters" />
-    </label>
-
-    <label>
-      Confirm New Password
-      <input type="password" name="confirmNewPassword" required minlength="8" placeholder="Re-enter new password" />
-    </label>
-
-    <button type="submit">Reset Password</button>
-
-    <p id="resetPasswordStatus" class="form-status"></p>
-  </form>
-</section>
-<section class="panel">
-  <h2>Check Maintenance Payment</h2>
-
-  <p>
-    Approved residents can check their maintenance payment due and payment history using their registered email.
-  </p>
-
-  <form id="paymentLookupForm" class="form-card">
-  <label>
-    Registered Email
-    <input type="email" name="residentEmail" required placeholder="Enter your registered email" />
-  </label>
-
-  <label>
-  Password
-  <input type="password" name="residentPassword" required placeholder="Enter your password" />
+          <label>
+  Current Password
+  <input type="password" name="temporaryPassword" required placeholder="Enter your current password" />
 </label>
 
-  <button type="submit">Check Payment Status</button>
+          <label>
+            New Password
+            <input type="password" name="newPassword" required minlength="8" placeholder="Minimum 8 characters" />
+          </label>
 
-  <p id="paymentLookupStatus" class="form-status"></p>
-</form>
+          <label>
+            Confirm New Password
+            <input type="password" name="confirmNewPassword" required minlength="8" placeholder="Re-enter new password" />
+          </label>
 
-  <div id="paymentResult" class="payment-result hidden"></div>
-</section>
-    <section id="events" class="panel hidden">
-  <h2>Event Promotion Submission</h2>
+          <button type="submit">Reset Password</button>
 
-  <p>
-    Submit your event to be reviewed and promoted on the community website.
-    Resident special offers are encouraged.
-  </p>
-
-  <form id="eventForm" class="form-card">
-    <label>
-      Organiser Type
-      <select name="organiserType" required>
-        <option value="">Select organiser type</option>
-        <option value="Resident / Member">Resident / Member</option>
-        <option value="Outsider / Business">Outsider / Business</option>
-      </select>
-    </label>
-
-    <label>
-      Organiser Name
-      <input type="text" name="organiserName" required />
-    </label>
-
-    <label>
-      Email
-      <input type="email" name="email" required />
-    </label>
-
-    <label>
-      Phone Number
-      <input type="tel" name="phone" required />
-    </label>
-
-    <label>
-      Unit / House Number
-      <input type="text" name="unitNo" placeholder="Required only for residents/members" />
-    </label>
-
-    <label>
-      Event Title
-      <input type="text" name="eventTitle" required />
-    </label>
-
-    <label>
-      Event Description
-      <textarea name="eventDescription" rows="5" required></textarea>
-    </label>
-
-    <label>
-      Event Date
-      <input type="date" name="eventDate" required />
-    </label>
-
-    <label>
-      Event Time
-      <input type="time" name="eventTime" required />
-    </label>
-
-    <label>
-      Event Location
-      <input type="text" name="eventLocation" required />
-    </label>
-
-    <label>
-      Event Poster URL
-      <input type="url" name="eventPosterUrl" placeholder="Paste image/poster link if available" />
-    </label>
-
-    <label>
-      Registration / Contact Link
-      <input type="url" name="registrationLink" placeholder="Example: Google Form, WhatsApp link, website link" />
-    </label>
-
-    <label>
-      Website Listing Duration
-      <select name="websiteDurationDays" required>
-        <option value="">Select duration</option>
-        <option value="7">7 days</option>
-        <option value="14">14 days</option>
-        <option value="30">30 days</option>
-      </select>
-    </label>
-
-    <label>
-      WhatsApp Blast Count
-      <select name="whatsappBlastCount" required>
-        <option value="">Select blast count</option>
-        <option value="0">No WhatsApp blast</option>
-        <option value="1">1 blast</option>
-        <option value="2">2 blasts</option>
-        <option value="3">3 blasts</option>
-      </select>
-    </label>
-
-    <label>
-      Preferred WhatsApp Blast Dates
-      <input type="text" name="preferredBlastDates" placeholder="Example: 10 June, 12 June, event day morning" />
-    </label>
-    <div class="fee-preview">
-  <strong>Estimated Promotion Fee:</strong>
-  <span id="eventFeePreview">Please select organiser type, duration, and WhatsApp blast count.</span>
-</div>
-
-    <div class="dynamic-section">
-  <h3>Special Offer for Residents</h3>
-
-  <label>
-    Offer Available?
-    <select name="residentOfferAvailable" id="residentOfferAvailable" required>
-      <option value="">Select option</option>
-      <option value="Yes">Yes</option>
-      <option value="No">No</option>
-    </select>
-  </label>
-
-  <div id="residentOfferFields" class="hidden">
-    <label>
-      Offer Type
-      <select name="residentOfferTitle">
-        <option value="">Select offer type</option>
-        <option value="Discount for residents">Discount for residents</option>
-        <option value="Resident-only price">Resident-only price</option>
-        <option value="Free gift for residents">Free gift for residents</option>
-        <option value="Early bird offer">Early bird offer</option>
-        <option value="Family package">Family package</option>
-        <option value="Buy 1 Free 1">Buy 1 Free 1</option>
-        <option value="Free entry for children">Free entry for children</option>
-        <option value="Free consultation">Free consultation</option>
-        <option value="Priority booking for residents">Priority booking for residents</option>
-        <option value="Other">Other</option>
-      </select>
-    </label>
-
-    <label>
-      Offer Description
-      <textarea name="residentOfferDescription" rows="4" placeholder="Explain what residents will get"></textarea>
-    </label>
-
-    <label>
-      Normal Price
-      <input type="text" name="normalPrice" placeholder="Example: RM100" />
-    </label>
-
-    <label>
-      Resident Price
-      <input type="text" name="residentPrice" placeholder="Example: RM80" />
-    </label>
-
-    <label>
-      Promo Code
-      <input type="text" name="promoCode" placeholder="Example: SPRINGHILL20" />
-    </label>
-
-    <label>
-      Offer Expiry Date
-      <input type="date" name="offerExpiryDate" />
-    </label>
+          <p id="resetPasswordStatus" class="form-status"></p>
+        </form>
+      </section>
+    </div>
   </div>
-</div>
-
-    <div class="terms-box">
-  <label class="checkbox-label">
-    <input type="checkbox" name="eventTermsAccepted" required />
-    I confirm that the event details provided are accurate and agree that all
-    submissions are subject to admin/committee approval before being published.
-  </label>
-</div>
-
-<button type="submit">Submit Event Promotion</button>
-
-<p id="eventFormStatus" class="form-status"></p>
-  </form>
-</section>
-  </main>
 
   <script src="script.js"></script>
 </body>
