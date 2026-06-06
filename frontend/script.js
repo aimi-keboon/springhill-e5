@@ -950,9 +950,9 @@ function renderBillingDetails(totalDueValue = null) {
 <div class="selected-bills-bar">
   <span id="selectedBillSummary">No bills selected.</span>
 
-  <button type="button" id="paySelectedButton" class="small-button" onclick="paySelectedBills(this)" disabled>
-    Pay Selected
-  </button>
+  <button type="button" id="paySelectedButton" class="text-pay-button hidden" onclick="paySelectedBills(this)">
+  Pay Selected
+</button>
 </div>
     <div class="table-wrap">
       <table>
@@ -1014,15 +1014,17 @@ function updateSelectedBillSummary() {
   }, 0);
 
   if (selectedIds.length === 0) {
-    summaryBox.textContent = "No bills selected.";
-    paySelectedButton.disabled = true;
-    return;
-  }
+  summaryBox.textContent = "No bills selected.";
+  paySelectedButton.classList.add("hidden");
+  paySelectedButton.disabled = true;
+  return;
+}
 
   summaryBox.textContent =
-    `${selectedIds.length} bill(s) selected · Total RM${totalSelected.toFixed(2)}`;
+  `${selectedIds.length} bill(s) selected · Total RM${totalSelected.toFixed(2)}`;
 
-  paySelectedButton.disabled = false;
+paySelectedButton.classList.remove("hidden");
+paySelectedButton.disabled = false;
 }
 
 async function paySelectedBills(buttonElement) {
