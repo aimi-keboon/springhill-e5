@@ -1342,23 +1342,50 @@ function clearLoginSession() {
 function updateLoggedInUi() {
   const loginSignupButton = document.getElementById("loginSignupButton");
   const logoutButton = document.getElementById("logoutButton");
+  const announcementsTabButton = document.getElementById("announcementsTabButton");
+  const eventsTabButton = document.getElementById("eventsTabButton");
   const profileTabButton = document.getElementById("profileTabButton");
 
   if (currentLoggedInResident) {
     loginSignupButton?.classList.add("hidden");
     logoutButton?.classList.remove("hidden");
+
+    announcementsTabButton?.classList.remove("hidden");
+    eventsTabButton?.classList.remove("hidden");
     profileTabButton?.classList.remove("hidden");
   } else {
     loginSignupButton?.classList.remove("hidden");
     logoutButton?.classList.add("hidden");
+
+    announcementsTabButton?.classList.add("hidden");
+    eventsTabButton?.classList.add("hidden");
     profileTabButton?.classList.add("hidden");
   }
 }
+function showHomeTab() {
+  const homeTab = document.getElementById("homeTab");
+  const homeTabButton = document.getElementById("homeTabButton");
 
+  document.querySelectorAll(".tab-panel").forEach((panel) => {
+    panel.classList.remove("active");
+  });
+
+  document.querySelectorAll(".tab-button").forEach((button) => {
+    button.classList.remove("active");
+  });
+
+  if (homeTab) {
+    homeTab.classList.add("active");
+  }
+
+  if (homeTabButton) {
+    homeTabButton.classList.add("active");
+  }
+}
 function logoutResident() {
   clearLoginSession();
   updateLoggedInUi();
-  goBackToAnnouncements();
+  showHomeTab();
 }
 async function refreshLoggedInBillingData() {
   if (!currentLoggedInResident || !currentResidentPassword) return;

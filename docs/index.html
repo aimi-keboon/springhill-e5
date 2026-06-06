@@ -31,93 +31,115 @@
     <p id="paymentRedirectStatus" class="status hidden"></p>
 
     <nav class="tab-nav">
-      <button type="button" class="tab-button active" onclick="showTab('announcementsTab', this)">
-        Announcements
-      </button>
+        <button type="button" id="homeTabButton" class="tab-button active" onclick="showTab('homeTab', this)">
+  Home
+</button>
+      <button type="button" id="announcementsTabButton" class="tab-button hidden" onclick="showTab('announcementsTab', this)">
+  Announcements
+</button>
 
-      <button type="button" class="tab-button" onclick="showTab('eventsTab', this)">
-        Events
-      </button>
+      <button type="button" id="eventsTabButton" class="tab-button hidden" onclick="showTab('eventsTab', this)">
+  Events
+</button>
       <button type="button" id="profileTabButton" class="tab-button hidden" onclick="showTab('billingPage', this)">
   Profile / Billing
 </button>
 
-      <button type="button" class="tab-button" onclick="showTab('eventApplicationTab', this)">
-        Event Application
-      </button>
+      <button type="button" id="eventApplicationTabButton" class="tab-button" onclick="showTab('eventApplicationTab', this)">
+  Event Application
+</button>
     </nav>
 
-    <section id="announcementsTab" class="tab-panel active">
+   <section id="homeTab" class="tab-panel active">
+  <section class="panel">
+    <h2>Welcome to Bandar Springhill E5</h2>
+
+    <p>
+      This portal is created for Bandar Springhill E5 residents, event organisers, and community updates.
+    </p>
+
+    <p>
+      Please log in as a resident to view private announcements, community events, billing details, and profile information.
+    </p>
+
+    <p>
+      Event organisers may submit an event promotion application using the Event Application tab.
+    </p>
+  </section>
+</section>
+
+<section id="announcementsTab" class="tab-panel">
   <section class="panel announcement-panel">
-  <img 
-    src="assets/decorations/announcement.png" 
-    alt="" 
-    class="announcement-decoration announcement-decoration-top" 
-  />
+    <img 
+      src="assets/decorations/announcement.png" 
+      alt="" 
+      class="announcement-decoration announcement-decoration-top" 
+    />
 
-  <img 
-    src="assets/decorations/announcement1.png" 
-    alt="" 
-    class="announcement-decoration announcement-decoration-bottom" 
-  />
+    <img 
+      src="assets/decorations/announcement1.png" 
+      alt="" 
+      class="announcement-decoration announcement-decoration-bottom" 
+    />
 
-  <h2>Official Announcements</h2>
+    <h2>Official Announcements</h2>
 
-  <p>
-    Latest official updates from the SpringHill E5 committee.
-  </p>
+    <p>
+      Latest official updates from the SpringHill E5 committee.
+    </p>
 
-        <div id="announcementsList" class="announcements-list">
-          <p>Loading announcements...</p>
-        </div>
+    <div id="announcementsList" class="announcements-list">
+      <p>Loading announcements...</p>
+    </div>
 
-        <div id="announcementsPagination" class="pagination"></div>
-      </section>
-    </section>
+    <div id="announcementsPagination" class="pagination"></div>
+  </section>
+</section>
 
-    <section id="eventsTab" class="tab-panel">
+<section id="eventsTab" class="tab-panel">
   <section class="panel community-highlight-panel">
-  <img 
-    src="assets/decorations/highlight.png" 
-    alt="" 
-    class="highlight-decoration highlight-decoration-right-center" 
-  />
+    <img 
+      src="assets/decorations/highlight.png" 
+      alt="" 
+      class="highlight-decoration highlight-decoration-right-center" 
+    />
 
-  <h2>Community Highlights</h2>
+    <h2>Community Highlights</h2>
 
-        <div class="banner-carousel sushi-carousel">
-  <div class="banner-track">
-    <img src="assets/banners/banner-1.jpg" alt="SpringHill E5 banner 1" />
-    <img src="assets/banners/banner-2.jpg" alt="SpringHill E5 banner 2" />
-    <img src="assets/banners/banner-3.jpg" alt="SpringHill E5 banner 3" />
+    <div class="banner-carousel sushi-carousel">
+      <div class="banner-track">
+        <img src="assets/banners/banner-1.jpg" alt="SpringHill E5 banner 1" />
+        <img src="assets/banners/banner-2.jpg" alt="SpringHill E5 banner 2" />
+        <img src="assets/banners/banner-3.jpg" alt="SpringHill E5 banner 3" />
 
-    <img src="assets/banners/banner-1.jpg" alt="SpringHill E5 banner 1 duplicate" />
-    <img src="assets/banners/banner-2.jpg" alt="SpringHill E5 banner 2 duplicate" />
-    <img src="assets/banners/banner-3.jpg" alt="SpringHill E5 banner 3 duplicate" />
-  </div>
-</div>
-      </section>
+        <img src="assets/banners/banner-1.jpg" alt="SpringHill E5 banner 1 duplicate" />
+        <img src="assets/banners/banner-2.jpg" alt="SpringHill E5 banner 2 duplicate" />
+        <img src="assets/banners/banner-3.jpg" alt="SpringHill E5 banner 3 duplicate" />
+      </div>
+    </div>
+  </section>
 
-      <section class="panel event-upcoming-panel">
-  <img 
-    src="assets/decorations/event.png" 
-    alt="" 
-    class="event-decoration event-decoration-top-left" 
-  />
+  <section class="panel event-upcoming-panel">
+    <img 
+      src="assets/decorations/event.png" 
+      alt="" 
+      class="event-decoration event-decoration-top-left" 
+    />
 
-  <h2>Upcoming Community Events</h2>
+    <h2>Upcoming Community Events</h2>
 
-        <p>
-          Approved event promotions and resident offers will appear here.
-        </p>
+    <p>
+      Approved event promotions and resident offers will appear here.
+    </p>
 
-        <div id="approvedEventsList" class="events-grid">
-          <p>Loading approved events...</p>
-        </div>
+    <div id="approvedEventsList" class="events-grid">
+      <p>Loading approved events...</p>
+    </div>
 
-        <div id="eventsPagination" class="pagination"></div>
-      </section>
-    </section>
+    <div id="eventsPagination" class="pagination"></div>
+  </section>
+</section>
+
 <section id="billingPage" class="tab-panel">
   <section class="panel billing-panel">
     <img 
