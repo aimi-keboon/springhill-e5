@@ -344,7 +344,7 @@ function renderApprovedEvents() {
 
   eventsList.innerHTML = visibleItems.map((event) => {
     const offerBadge = event.residentOfferAvailable === "Yes"
-      ? `<span class="event-badge">Offer Available</span>`
+      ? ``
       : "";
 
     const poster = event.eventPosterUrl
