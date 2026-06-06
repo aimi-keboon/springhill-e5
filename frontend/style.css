@@ -1109,3 +1109,50 @@ td {
   margin-top: 18px;
   margin-bottom: 12px;
 }
+/* ANNOUNCEMENT DECORATIONS */
+
+.announcement-panel {
+  position: relative;
+  overflow: visible;
+}
+
+.announcement-panel h2,
+.announcement-panel > p,
+.announcement-panel .announcements-list,
+.announcement-panel .pagination {
+  position: relative;
+  z-index: 2;
+}
+
+.announcement-decoration {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  object-fit: contain;
+}
+
+.announcement-decoration-top {
+  top: -48px;
+  right: -42px;
+  width: 150px;
+}
+
+.announcement-decoration-bottom {
+  bottom: -48px;
+  left: -42px;
+  width: 135px;
+}
+
+@media (max-width: 760px) {
+  .announcement-decoration-top {
+    top: -34px;
+    right: -22px;
+    width: 95px;
+  }
+
+  .announcement-decoration-bottom {
+    bottom: -34px;
+    left: -22px;
+    width: 90px;
+  }
+}
